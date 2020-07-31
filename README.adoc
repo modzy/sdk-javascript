@@ -308,7 +308,7 @@ And then, you can:
 
 [source, bash]
 ----
-`$ node samples/job_with_text_input_sample.js`
+$ node samples/job_with_text_input_sample.js
 ----
 
 //== Older versions
