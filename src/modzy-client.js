@@ -87,8 +87,9 @@ class ModzyClient {
 		lastActiveDateTime = null, expirationDateTime = null,
 		page = null, perPage = 1000, direction = null, sortBy = null
 	) {
-		return this.modelClient.getAllModels(modelId, author, createdByEmail, name,
+		return this.modelClient.getModels(modelId, author, createdByEmail, name,
 			description, isActive, isExpired, isRecommended,
+			lastActiveDateTime, expirationDateTime,
 			page, perPage, direction, sortBy);
 	}
 
