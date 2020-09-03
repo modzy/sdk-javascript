@@ -6,77 +6,6 @@ import JobClient from '../src/job-client.js';
 const jobClient = new JobClient(process.env.MODZY_BASE_URL, process.env.MODZY_API_KEY);
 
 test(
-    'testGetJobHistoryStatusAll',
-    async () => {
-        await jobClient.getJobHistory(null, null, null, null, null, 'all', null, null, null, null)
-            .then(
-                (jobs) => {                    
-                    expect(jobs).toBeDefined();
-                    expect(jobs).not.toHaveLength(0);
-                    logger.info( `testGetJobHistoryStatusAll() get ${jobs.length} jobs` );
-                    jobs.forEach(
-                        (job)=>{                                                      
-                            expect(job.jobIdentifier).toBeDefined();
-                            expect(job.status).toBeDefined();
-                            expect(job.submittedAt).toBeDefined();
-                            expect(job.submittedBy).toBeDefined(); 
-                        }
-                    );
-                }
-            );
-    }
-);
-
-test(
-    'testGetJobHistoryByUser',
-    async () => {
-        await jobClient.getJobHistory(process.env.MODZY_API_KEY.substring(0,process.env.MODZY_API_KEY.lastIndexOf('.')), null, null, null, null, 'all', null, null, null, null)
-            .then(
-                (jobs) => {                    
-                    expect(jobs).toBeDefined();
-                    expect(jobs).not.toHaveLength(0);
-                    logger.info( `testGetJobHistoryByUser() get ${jobs.length} jobs` );
-                    jobs.forEach(
-                        (job)=>{                                                                              
-                            expect(job.jobIdentifier).toBeDefined();
-                            expect(job.status).toBeDefined();
-                            expect(job.submittedAt).toBeDefined();
-                            expect(job.submittedBy).toBeDefined();                            
-                        }
-                    );
-                }
-            );
-    }
-);
-
-test(
-    'testGetJobHistoryByAccessKey',
-    async () => {
-        await jobClient.getJobHistory(null, process.env.MODZY_API_KEY.substring(0,process.env.MODZY_API_KEY.lastIndexOf('.')), null, null, null, null, null, null, null, null)
-            .then(
-                (jobs) => {                    
-                    expect(jobs).toBeDefined();
-                    expect(jobs).not.toHaveLength(0);
-                    logger.info( `testGetJobHistoryByAccessKey() get ${jobs.length} jobs` );
-                    jobs.forEach(
-                        (job)=>{                                                      
-                            expect(job.jobIdentifier).toBeDefined();
-                            expect(job.status).toBeDefined();
-                            expect(job.submittedAt).toBeDefined();
-                            expect(job.submittedBy).toBeDefined();                            
-                        }
-                    );
-                }
-            )
-            .catch(
-                (error)=>{
-                    logger.error("Error: "+error);
-                }
-            );
-    }
-);
-
-test(
     'testSubmitJob',
     async () => {
         await jobClient.submitJob(
@@ -206,5 +135,128 @@ test(
             );
     }
 );
+
+test(
+    'testGetJobHistoryByUser',
+    async () => {
+        await jobClient.getJobHistory("a", null, null, null, null, null, null, null, null, null)
+            .then(
+                (jobs) => {
+                    expect(jobs).toBeDefined();
+                    expect(jobs).not.toHaveLength(0);
+                    logger.info( `testGetJobHistorybyUser() get ${jobs.length} jobs` );
+                    jobs.forEach(
+                        (job)=>{                                                      
+                            expect(job.jobIdentifier).toBeDefined();
+                            expect(job.status).toBeDefined();
+                            expect(job.submittedAt).toBeDefined();
+                            expect(job.submittedBy).toBeDefined(); 
+                        }
+                    );
+                }
+            );
+    }
+);
+
+test(
+    'testGetJobHistoryByModel',
+    async () => {
+        await jobClient.getJobHistory(null, null, null, null, "Sentiment Analysis", null, null, null, null, null)
+            .then(
+                (jobs) => {
+                    expect(jobs).toBeDefined();
+                    expect(jobs).not.toHaveLength(0);
+                    logger.info( `testGetJobHistoryByModel() get ${jobs.length} jobs` );
+                    jobs.forEach(
+                        (job)=>{                                                      
+                            expect(job.jobIdentifier).toBeDefined();
+                            expect(job.status).toBeDefined();
+                            expect(job.submittedAt).toBeDefined();
+                            expect(job.submittedBy).toBeDefined(); 
+                        }
+                    );
+                }
+            );
+    }
+);
+
+test(
+    'testGetJobHistoryByAccessKey',
+    async () => {
+        await jobClient.getJobHistory(null, process.env.MODZY_API_KEY.substring(0,process.env.MODZY_API_KEY.lastIndexOf('.')), null, null, null, null, null, null, null, null)
+            .then(
+                (jobs) => {                    
+                    expect(jobs).toBeDefined();
+                    expect(jobs).not.toHaveLength(0);
+                    logger.info( `testGetJobHistoryByAccessKey() get ${jobs.length} jobs` );
+                    jobs.forEach(
+                        (job)=>{                                                      
+                            expect(job.jobIdentifier).toBeDefined();
+                            expect(job.status).toBeDefined();
+                            expect(job.submittedAt).toBeDefined();
+                            expect(job.submittedBy).toBeDefined();                            
+                        }
+                    );
+                }
+            )
+            .catch(
+                (error)=>{
+                    logger.error("Error: "+error);
+                }
+            );
+    }
+);
+
+test(
+    'testGetJobHistoryByDate',
+    async () => {
+        let startDate = new Date();
+        startDate.setDate(startDate.getDate()-7);  
+        logger.info("StartDate type "+(startDate instanceof Date))      
+        await jobClient.getJobHistory(null, null, startDate, null, null, null, null, null, null, null)
+            .then(
+                (jobs) => {                    
+                    expect(jobs).toBeDefined();
+                    expect(jobs).not.toHaveLength(0);
+                    logger.info( `testGetJobHistoryByDate() get ${jobs.length} jobs` );
+                    jobs.forEach(
+                        (job)=>{                                                                              
+                            expect(job.jobIdentifier).toBeDefined();
+                            expect(job.status).toBeDefined();
+                            expect(job.submittedAt).toBeDefined();
+                            expect(job.submittedBy).toBeDefined();                            
+                        }
+                    );
+                }
+            );
+    }
+);
+
+test(
+    'testGetJobHistoryStatus',
+    async () => {
+        await jobClient.getJobHistory(null, null, null, null, null, 'terminated', null, null, null, null)
+            .then(
+                (jobs) => {
+                    expect(jobs).toBeDefined();
+                    expect(jobs).not.toHaveLength(0);
+                    logger.info( `testGetJobHistoryStatus() get ${jobs.length} jobs` );
+                    jobs.forEach(
+                        (job)=>{                                                      
+                            expect(job.jobIdentifier).toBeDefined();
+                            expect(job.status).toBeDefined();
+                            expect(job.submittedAt).toBeDefined();
+                            expect(job.submittedBy).toBeDefined(); 
+                        }
+                    );
+                }
+            );
+    }
+);
+
+
+
+
+
 
 

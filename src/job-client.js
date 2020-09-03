@@ -26,7 +26,7 @@ class JobClient{
      * @param {string} access_key - Identifier of the access key to be assigned to the user
      * @param {(Date|string)} start_date - initial date to filter recods
      * @param {(Date|string)} end_date - final date to filter recods
-     * @param {(string|string[])} job_identifiers - Array of unique job identifiers
+     * @param {string} model - model name or version
      * @param {string} status - Status of the jobs (all, pending, terminated)
      * @param {string} sortBy - attribute name to sort results
      * @param {string} direction - Direction of the sorting algorithm (asc, desc)
@@ -36,7 +36,7 @@ class JobClient{
 	 * @throws {ApiError} Error if there is something wrong with the service or the call
 	 */
 	getJobHistory(user, accessKey, startDate, endDate,
-                  jobIdentifiers, status,
+                  model, status,
                   page, perPage=1000, direction, sortBy
         ){
         if( user !== null && typeof user !== "string" ){
@@ -46,7 +46,7 @@ class JobClient{
             throw("the accessKey param should be a string");
         }  
         if( startDate !== null && startDate !== undefined ){
-            if( typeof startDate === "Date" ){
+            if( startDate instanceof Date ){
                 startDate = startDate.toISOString();
             }
             else if( typeof startDate !== "string" ){
@@ -64,9 +64,9 @@ class JobClient{
         if( status !== null && typeof status !== "string" ){
             throw("the status param should be a string");
         } 
-        if(jobIdentifiers !== null && jobIdentifiers.length !== undefined ){
-            throw("the jobIdentifiers param should be a array");
-        }
+        if( model !== null && typeof model !== "string" ){
+            throw("the model param should be a string");
+        } 
         if( sortBy !== null && typeof sortBy !== "string" ){
             throw("the sortBy param should be a string");
         }
@@ -84,7 +84,7 @@ class JobClient{
             "accessKey": accessKey,
             "startDate": startDate,
             "endDate": endDate,
-            "jobIdentifiers": jobIdentifiers,
+            "model": model,
             "status": status,
             "sort-by": sortBy,
             "direction": direction,
