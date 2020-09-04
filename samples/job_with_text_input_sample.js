@@ -30,7 +30,6 @@ async function createJobWithTextInput() {
         // Or if you already know the model id and want to know more about the model, you can use this instead:
         //let model = await modzyClient.getModel("ed542963de");
         //You can find more information about how to query the models on the model_samples.js file.
-
         // The model identifier is under the modelId key. You can take a look at the other keys by uncommenting the following line
         logger.info(Object.keys(model).toString().replace('\n', ' '));
         // Or just log the model identifier and the latest version        
@@ -89,7 +88,7 @@ async function createJobWithTextInput() {
                 // results.json, so we can get the results as follows:
                 if (result.results[key]) {
                     let model_res = result.results[key]["results.json"];
-                    // The output for this model comes in a JSON format, so we can directly log the model results:                    
+                    // The output for this model comes in a JSON format, so we can directly log the results:                    
                     logger.info(`    ${key}: ${JSON.stringify(model_res)}`);
                 }
                 else {

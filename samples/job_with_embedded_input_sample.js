@@ -31,11 +31,11 @@ async function createJobWithEmbeddedInput() {
         // Or if you already know the model id and want to know more about the model, you can use this instead:
         //let model = await modzyClient.getModel("c60c8dbd79");
         //You can find more information about how to query the models on the model_samples.js file.
-
         // The model identifier is under the modelId key. You can take a look at the other keys by uncommenting the following line
         logger.info(Object.keys(model).toString().replace('\n', ' '));
         // Or just log the model identifier and the latest version        
         logger.info(`The model identifier is ${model.modelId} and the latest version is ${model.latestVersion}`);
+
         // Get the model version object:
         // If you already know the model version and the input key(s) of the model version, you can skip this step. Also, you can
         // use the following code block to know about the input keys and skip the call on future job submissions.
@@ -82,6 +82,7 @@ async function createJobWithEmbeddedInput() {
         // We provide a helper method to listen until the job finishes processing. It listens until the job finishes 
         // and moves to COMPLETED, CANCELED, or TIMEOUT.        
         job = await modzyClient.blockUntilComplete(job);
+
         // Get the results:
         // Check the status of the job. Jobs may be canceled or may reach a timeout.
         if (job.status === "COMPLETED") {
@@ -96,7 +97,7 @@ async function createJobWithEmbeddedInput() {
                 // results.json, so we can get the results as follows:
                 if (result.results[key]) {
                     let model_res = result.results[key]["results.json"];
-                    // The output for this model comes in a JSON format, so we can directly log the model results:                    
+                    // The output for this model comes in a JSON format, so we can directly log the results:                    
                     logger.info(`    ${key}: ${JSON.stringify(model_res)}`);
                 }
                 else {
