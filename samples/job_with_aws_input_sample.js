@@ -37,7 +37,7 @@ async function createJobWithAWSInput() {
         logger.info(`The model identifier is ${model.modelId} and the latest version is ${model.latestVersion}`);
 
         // Get the model version object:
-        // If you already know the model version and the input key(s) of the model version you can skip this step. Also, you can
+        // If you already know the model version and the input key(s) of the model version, you can skip this step. Also, you can
         // use the following code block to know about the input keys and skip the call on future job submissions.
         let modelVersion = await modzyClient.getModelVersion(model.modelId, model.latestVersion);
         // The info stored in modelVersion provides insights about the amount of time that the model can spend processing, the input, and
@@ -95,6 +95,7 @@ async function createJobWithAWSInput() {
         // We provide a helper method to listen until the job finishes processing. It listens until the job finishes 
         // and moves to COMPLETED, CANCELED, or TIMEOUT.        
         job = await modzyClient.blockUntilComplete(job);
+
         // Get the results:
         // Check the status of the job. Jobs may be canceled or may reach a timeout.
         if (job.status === "COMPLETED") {
