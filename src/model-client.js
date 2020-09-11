@@ -278,7 +278,7 @@ class ModelClient{
 
     /**
 	 * 
-	 * Call the Modzy API Service that return a version list related to a model identifier
+	 * Call the Modzy API Service that return a model version
 	 * 
 	 * @param {string} modelId - Identifier of the model
      * @param {string} versionId - Identifier of the version
@@ -295,6 +295,64 @@ class ModelClient{
         .then(
             ( response )=>{
                 logger.info(`getModelVersion(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
+                return response.data;
+            }
+        )
+        .catch(
+            ( error )=>{                
+                throw( new ApiError( error ) );
+            }
+        );
+    }
+
+    /**
+	 * 
+	 * Call the Modzy API Service that return the model version input sample
+	 * 
+	 * @param {string} modelId - Identifier of the model
+     * @param {string} versionId - Identifier of the version
+	 * @return {String} A json string with the input sample
+	 * @throws {ApiError} Error if there is something wrong with the service or the call
+	 */
+    getModelVersionInputSample(modelId, versionId){
+        const requestURL = `${this.baseURL}/${modelId}/versions/${versionId}/sample-input`;
+        logger.debug(`getModelVersionInputSample(${modelId}, ${versionId}) GET ${requestURL}`);
+        return axios.get(
+            requestURL,
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+        .then(
+            ( response )=>{
+                logger.info(`getModelVersionInputSample(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
+                return response.data;
+            }
+        )
+        .catch(
+            ( error )=>{                
+                throw( new ApiError( error ) );
+            }
+        );
+    }
+
+    /**
+	 * 
+	 * Call the Modzy API Service that return the model version output sample
+	 * 
+	 * @param {string} modelId - Identifier of the model
+     * @param {string} versionId - Identifier of the version
+	 * @return {String} A json string with the output sample
+	 * @throws {ApiError} Error if there is something wrong with the service or the call
+	 */
+    getModelVersionInputSample(modelId, versionId){
+        const requestURL = `${this.baseURL}/${modelId}/versions/${versionId}/sample-output`;
+        logger.debug(`getModelVersionOutputSample(${modelId}, ${versionId}) GET ${requestURL}`);
+        return axios.get(
+            requestURL,
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+        .then(
+            ( response )=>{
+                logger.info(`getModelVersionOutputSample(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
                 return response.data;
             }
         )
