@@ -283,27 +283,31 @@ class ModzyClient {
 	 */
 	blockUntilComplete(job) {
 		logger.debug(`blockUntilComplete(${job.jobIdentifier}}) :: ${job.status}`);
-		return this.jobClient.getJob(job.jobIdentifier)
-			.then(
-				(updatedJob) => {
-					if (updatedJob.status === "SUBMITTED" || updatedJob.status === "IN_PROGRESS") {
-						return new Promise(
-							(resolve, reject) => {
-								setTimeout(
-									() => {
-										resolve(
-											this.blockUntilComplete(updatedJob)
-										);
-									},
-									20000
-								);
-							}
-						);
-					}
-					logger.debug(`blockUntilComplete(${updatedJob.jobIdentifier}}) :: returning :: ${updatedJob.status}`);
-					return updatedJob;
-				}
-			)
+		return new Promise(
+			(resolve, reject) => {
+				setTimeout(
+					() => {
+						this.jobClient.getJob(job.jobIdentifier)
+							.then(
+								(updatedJob) => {
+									if (updatedJob.status === "SUBMITTED" || updatedJob.status === "IN_PROGRESS") {
+										resolve(this.blockUntilComplete(updatedJob));
+									}
+									logger.debug(`blockUntilComplete(${updatedJob.jobIdentifier}}) :: returning :: ${updatedJob.status}`);
+									resolve(updatedJob);
+								}
+							)
+							.catch(
+								(error) => {
+									logger.error(error);
+									reject(error);
+								}
+							);
+					},
+					2000
+				);
+			}
+		);		
 	}
 
    /**
