@@ -125,6 +125,7 @@ class JobClient{
             .then(
                 ( response )=>{
                     logger.info(`submitJob(${job.model.identifier}, ${job.model.version}) :: ${response.status} ${response.statusText}`);
+                    response.data.status = "SUBMITTED"; 
                     return response.data;
                 }
             )

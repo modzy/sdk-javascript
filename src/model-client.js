@@ -343,7 +343,7 @@ class ModelClient{
 	 * @return {String} A json string with the output sample
 	 * @throws {ApiError} Error if there is something wrong with the service or the call
 	 */
-    getModelVersionInputSample(modelId, versionId){
+    getModelVersionOutputSample(modelId, versionId){
         const requestURL = `${this.baseURL}/${modelId}/versions/${versionId}/sample-output`;
         logger.debug(`getModelVersionOutputSample(${modelId}, ${versionId}) GET ${requestURL}`);
         return axios.get(
