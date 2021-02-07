@@ -1,10 +1,10 @@
 const logger = require('log4js').getLogger("modzy");
 
 
-import ModelClient from './model-client.js';
-import TagClient from './tag-client.js';
-import JobClient from './job-client.js';
-import ResultClient from './result-client.js';
+const ModelClient = require('./model-client.js');
+const TagClient = require('./tag-client.js');
+const JobClient = require('./job-client.js');
+const ResultClient = require('./result-client.js');
 
 /**
  * Facade class that mask all the interactions with Modzy API
