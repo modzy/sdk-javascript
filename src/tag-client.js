@@ -1,7 +1,7 @@
 const axios  = require('axios').default;
 const logger = require('log4js').getLogger("modzy.tag-client");
 
-import ApiError from './api-error.js';
+const ApiError = require('./api-error.js');
 
 /**
  * Utility class that mask the interaction with the model tags api
