@@ -174,7 +174,7 @@ A *job* is the process that sends data to a model, sets the model to run the dat
 
 Modzy supports several *input types* such as `text`, `embedded` for Base64 strings, `aws-s3` and `aws-s3-folder` for inputs hosted in buckets, and `jdbc` for inputs stored in databases. In this sample, we use `text`.
 
-link:https://github.com/modzy/sdk-javascript/blob/main/samples[Here] are samples to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
+link:https://github.com/modzy/sdk-javascript/blob/readmeUpdates/samples.adoc[Here] are samples to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
 
 link:https://models.modzy.com/docs/jobs/jobs/submit-job-text[Submit a job with the model, version, and input items]:
 
