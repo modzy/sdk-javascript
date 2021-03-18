@@ -174,7 +174,7 @@ A *job* is the process that sends data to a model, sets the model to run the dat
 
 Modzy supports several *input types* such as `text`, `embedded` for Base64 strings, `aws-s3` and `aws-s3-folder` for inputs hosted in buckets, and `jdbc` for inputs stored in databases. In this sample, we use `text`.
 
-Submit a job with the model, version, and input items:
+link:https://models.modzy.com/docs/jobs/jobs/submit-job-text[Submit a job with the model, version, and input items]:
 
 [source, js]
 ----
@@ -188,14 +188,18 @@ let job = await modzyClient.submitJobText(
             );
 ----
 
-Hold until the inference is complete and results become available:
+link:https://models.modzy.com/docs/jobs/jobs/retrieve-job-details[Hold until the inference is complete and results become available]:
 
 [source, js]
 ----
 job = await modzyClient.blockUntilComplete(job);
 ----
 
-Get the output results:
+link:https://models.modzy.com/docs/jobs/results/retrieve-results[Get the results]:
+
+Results are available per input item and can be identified with the name provided for each input item upon job request. You can also add an input name to the route and limit the results to any given input item.
+
+Jobs requested for multiple input items may have partial results available prior to job completion.
 
 [source, js]
 ----
@@ -231,7 +235,7 @@ Modzy supports link:https://models.modzy.com/docs/features/batch-processing[batc
 
 == APIs
 
-Currently we support the following api routes:
+Here is a list of Modzy APIs. To see all the APIs, check our link:https://models.modzy.com/docs/home/home[Documentation].
 
 :doc-pages: https://models.modzy.com/docs/
 [cols=3*, stripes=even]
