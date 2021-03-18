@@ -1,7 +1,7 @@
 
 
 
-= These samples show how to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
+=== These samples show how to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
 
 
 This sample submits a job with an embedded image:
