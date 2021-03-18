@@ -12,60 +12,33 @@
 <h1>Javascript SDK</h1>
 
 <div align="center">
-
 <br>
 <br>
-
-
 <img  src="https://www.modzy.com/wp-content/uploads/2019/10/modzy-logo-tm.svg" alt="Modzy" width="350" height="auto">
-
 <br>
 <br>
 <br>
 <br>
-
-
-
-
 <p><b>Modzy's Javascript SDK queries models, submits inference jobs, and returns results directly to your editor.</b></p>
-
-
 <br>
-
-
 <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/modzy/sdk-javascript">
-
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/modzy/sdk-javascript">
-
 <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/modzy/sdk-javascript">
-
 </div>
-
 <br>
 <br>
-
 <div align="center">
 <a href=https://models.modzy.com/docs/how-to-guides/job-lifecycle style="text-decoration:none">The job lifecycle</a> |
 <a href=https://models.modzy.com/docs/how-to-guides/api-keys style="text-decoration:none">API keys</a> |
 <a href=/samples style="text-decoration:none">Samples</a> |
 <a href=https://models.modzy.com/docs/home/home style="text-decoration:none">Documentation</a>
-
-
 <br>
 <br>
 <br>
 <br>
-
-
-
 <br>
-
 </div>
-
 <br>
-
-
-
 ++++
 
 
@@ -74,7 +47,7 @@
 
 ++++
 <br>
-<div align="center>
+<div align="center">
   <a href="https://asciinema.org/a/B1IkRkW4LjW7sufkjoMWoETH6"><img src="install.gif" style="max-width:100%"/></a>
 </div>
 <br>
@@ -92,38 +65,54 @@ Clone the repository:
 
 //no reference to node.js in here but it is in contributing.
 
-== Usage
+== Initialize
 
+Once you have a `model` and `version` identified, get authenticated with your API key.
 
-=== Initialize
+API keys are security credentials required to perform API requests to Modzy. Our API keys are composed of an ID that is split by a dot into two parts: the prefix and the body. +
+The *prefix* is the API keys' visible part. It’s only used to identify the key and by itself, it’s unable to perform API requests.
 
-Once you have a `model` and `version` identified, authenticate to Modzy with your API key:
+link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-users-api-keys[List your API keys]:
+
+[source, js]
+----
+----
+
+The *body* is the prefix’s complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can link:https://models.modzy.com/docs/users-keys/api-keys/replace-API-key[replace the API key's body].
+
+link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-full-API-key[Retrieve the API key's body]:
+
+[source, js]
+----
+----
+
+Get authenticated with your API key:
 
 [source, js]
 ----
 const modzy = require('modzy-sdk');
-const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "my_key.modzy");
+const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "prefix.body");
 ----
 
-=== Basic usage
+== Basic usage
 
 ++++
 <br>
-++++
-
-The code below is applicable for `text/plain` input type.
-
-++++
 <div align="center">
-
 <img src="js.gif" alt="basic usage" style="max-width:100%">
-
 </div>
-
 <br>
 ++++
 
-Browse models:
+
+
+=== Browse models
+
+Modzy’s Marketplace includes pre-trained and re-trainable AI models from industry-leading machine learning companies, accelerating the process from data to value.
+
+The Model service drives the Marketplace and can be integrated with other applications, scripts, and systems. It provides routes to list, search, and filter model and model-version details.
+
+link:https://models.modzy.com/docs/marketplace/models/retrieve-models[List models]
 
 [source, js]
 ----
@@ -138,8 +127,31 @@ try{
 
 ----
 
+Tags help categorize and filter models. They make model browsing easier.
 
-Get a model's details:
+link:https://models.modzy.com/docs/marketplace/tags/retrieve-tags[List tags]:
+
+[source, js]
+----
+
+----
+
+link:https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags[List models by tag]:
+
+[source, js]
+----
+
+----
+
+=== Get a model's details
+
+Models accept specific *input file link:https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types[MIME] types*. Some models may require multiple input file types to run data accordingly. In this sample, we use a model that requires `input.txt`.
+
+Models require inputs to have a specific *input name* declared in the job request. This name can be found in the model’s details. In this sample, we use a model that requires `text/plain`.
+
+Additionally, users can set their own input names. When multiple input items are processed in a job, these names are helpful to identify and get each input’s results. In this sample, we use a model that requires `input-1` and `input-2`.
+
+link:https://models.modzy.com/docs/marketplace/models/retrieve-model-details[Get a model's details]:
 
 [source, js]
 ----
@@ -147,8 +159,22 @@ const saModel = await modzyClient.getModel("ed542963de");
 console.log(JSON.stringify(saModel));
 ----
 
+Model specific sample requests are available in the version details and in the Model Details page.
 
-Submit a job providing the model, version, and input file:
+link:https://models.modzy.com/docs/marketplace/versions/retrieve-version-details[Get version details]:
+
+[source, js]
+----
+
+----
+
+=== Submit a job and get results
+
+A *job* is the process that sends data to a model, sets the model to run the data, and returns results.
+
+Modzy supports several *input types* such as `text`, `embedded` for Base64 strings, `aws-s3` and `aws-s3-folder` for inputs hosted in buckets, and `jdbc` for inputs stored in databases. In this sample, we use `text`.
+
+Submit a job with the model, version, and input items:
 
 [source, js]
 ----
@@ -167,7 +193,6 @@ Hold until the inference is complete and results become available:
 [source, js]
 ----
 job = await modzyClient.blockUntilComplete(job);
-
 ----
 
 Get the output results:
@@ -201,6 +226,10 @@ catch(error){
 ----
 
 == Features
+
+Modzy supports link:https://models.modzy.com/docs/features/batch-processing[batch processing], link:https://models.modzy.com/docs/features/explainability[explainability], and link:https://models.modzy.com/docs/features/model-drift[model drift detection].
+
+== APIs
 
 Currently we support the following api routes:
 
