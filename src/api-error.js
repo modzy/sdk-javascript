@@ -15,8 +15,8 @@ class ApiError{
     constructor(error=null, url="", code=500, message="Unexpected"){
         this.error   = error !== null ? error.toJSON() : message;
         this.url     = error !== null ? this.error.config.url : url;
-        this.code    = error !== null ? ( error.response.data ? error.response.data.statusCode : this.data.code ) : code;
-        this.message = error !== null ? ( error.response.data ? error.response.data.message : this.error.message ) : message;
+        this.code    = error !== null ? ( error.response?.data ? error.response.data.statusCode : code ) : code;
+        this.message = error !== null ? ( error.response?.data ? error.response.data.message : this.error.message ) : message;
     }
 
     /**
