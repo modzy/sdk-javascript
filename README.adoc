@@ -57,13 +57,26 @@ Clone the repository:
 
 - `$ git clone https://github.com/modzy/sdk-javascript.git`
 
-++++
-<p>Use <a href=https://yarnpkg.com/ style="text-decoration:none">yarn</a> to package and install the SDK. </p>
-++++
+Use https://yarnpkg.com/[yarn] to package and install the SDK:
 
-- `$ yarn add ./sdk-javascript`
+Globally:
 
-//no reference to node.js in here but it is in contributing.
+- `$ yarn global add ./sdk-javascript`
+
+In an existing project (directly from github):
+
+- `$ yarn add modzy/sdk-javascript`
+
+
+Or you can use https://nodejs.org/[npm]:
+
+Globally
+
+- `$ npm install -g ./sdk-javascript`
+
+In an existing project (directly from github):
+
+- `$ yarn install modzy/sdk-javascript`
 
 == Initialize
 
@@ -76,6 +89,12 @@ link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-users-api-keys[L
 
 [source, js]
 ----
+const keys = await modzyClient.getAccountingClient().getAPIKeys('your@email.com');
+keys.forEach(
+    keys => {
+      console.log(JSON.stringify(model));
+    }
+);
 ----
 
 The *body* is the prefix’s complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can link:https://models.modzy.com/docs/users-keys/api-keys/replace-API-key[replace the API key's body].
@@ -84,6 +103,9 @@ link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-full-API-key[Ret
 
 [source, js]
 ----
+
+const hash = await modzyClient.getAccountingClient().getKeyBody('yourKey');
+console.log("The hash is: "+hash);
 ----
 
 Get authenticated with your API key:
@@ -116,15 +138,12 @@ link:https://models.modzy.com/docs/marketplace/models/retrieve-models[List model
 
 [source, js]
 ----
-try{
-    const models = await modzyClient.getAllModels();
-    models.forEach(
-        model => {
-          console.log(JSON.stringify(model));
-        }
-    );
-}
-
+const models = await modzyClient.getAllModels();
+models.forEach(
+    model => {
+      console.log(JSON.stringify(model));
+    }
+);
 ----
 
 Tags help categorize and filter models. They make model browsing easier.
@@ -133,14 +152,24 @@ link:https://models.modzy.com/docs/marketplace/tags/retrieve-tags[List tags]:
 
 [source, js]
 ----
-
+const tags = await modzyClient.getAllTags();
+tags.forEach(
+    tag => {
+      console.log(JSON.stringify(tag));
+    }
+);
 ----
 
 link:https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags[List models by tag]:
 
 [source, js]
 ----
-
+const tagsModels = await modzyClient.getTagsAndModels("language_and_text");
+tagsModels.models.forEach(
+    model => {
+        console.log(JSON.stringify(model));
+    }
+);
 ----
 
 === Get a model's details
@@ -165,7 +194,17 @@ link:https://models.modzy.com/docs/marketplace/versions/retrieve-version-details
 
 [source, js]
 ----
-
+let modelVersion = await modzyClient.getModelVersion("ed542963de", "0.0.27");
+console.log("inputs:");
+for(key in modelVersion.inputs){
+    let input = modelVersion.inputs[key];
+    console.log(`  key ${input.name}, type ${input.acceptedMediaTypes}, description: ${input.description}`);
+}
+console.log("outputs:");
+for(key in modelVersion.outputs){
+    let output = modelVersion.outputs[key];
+    console.log(`  key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
+}
 ----
 
 === Submit a job and get results

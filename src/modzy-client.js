@@ -4,6 +4,7 @@ const logger = require('log4js').getLogger("modzy");
 const ModelClient = require('./model-client.js');
 const TagClient = require('./tag-client.js');
 const JobClient = require('./job-client.js');
+const AccountingClient = require('./accounting-client.js');
 const ResultClient = require('./result-client.js');
 
 /**
@@ -31,6 +32,7 @@ class ModzyClient {
 		this.tagClient = new TagClient(baseURL, apiKey);
 		this.jobClient = new JobClient(baseURL, apiKey);
 		this.resultClient = new ResultClient(baseURL, apiKey);
+		this.accountingClient = new AccountingClient(baseURL, apiKey);
 	}
 
     /**
@@ -70,6 +72,15 @@ class ModzyClient {
 	 */
 	getResultClient() {
 		return this.resultClient;
+	}
+
+	/**
+	 * Get the accounting client initialized
+	 * @see {@link AccountingClient}
+	 * @returns {AccountingClient}
+	 */
+	getAccountingClient(){
+		return this.accountingClient;
 	}
 
 	/**     	

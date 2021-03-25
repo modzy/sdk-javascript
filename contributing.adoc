@@ -86,7 +86,7 @@ Clone the repository:
 
 Install dependencies:
 
-- `$ yarn install`
+- `$ yarn install` or `$ npm install`
 
 Create a branch for your awesome new feature:
 
@@ -134,11 +134,15 @@ MODZY_API_KEY=my_key.modzy
 
 Run tests:
 
-- `$ yarn test`
+- `$ yarn test` or `$ npm test`
 
 Or specify the test that you want to run:
 
 - `$ yarn test -- model-client.test.js`
+
+With npm:
+
+- `$ npm test -- model-client.test.js`
 
 === 4. Document your changes
 
@@ -146,7 +150,7 @@ Add supporting documentation for your code.
 
 === 5. Transpile the code
 
-- `$ yarn build`
+- `$ yarn build` or `$ npm run-script build`
 
 === 6. Send a pull request
 
