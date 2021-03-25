@@ -76,7 +76,7 @@ Globally
 
 In an existing project (directly from github):
 
-- `$ yarn install modzy/sdk-javascript`
+- `$ npm install modzy/sdk-javascript`
 
 == Initialize
 
