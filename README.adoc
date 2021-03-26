@@ -12,60 +12,33 @@
 <h1>Javascript SDK</h1>
 
 <div align="center">
-
 <br>
 <br>
-
-
 <img  src="https://www.modzy.com/wp-content/uploads/2019/10/modzy-logo-tm.svg" alt="Modzy" width="350" height="auto">
-
 <br>
 <br>
 <br>
 <br>
-
-
-
-
 <p><b>Modzy's Javascript SDK queries models, submits inference jobs, and returns results directly to your editor.</b></p>
-
-
 <br>
-
-
 <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/modzy/sdk-javascript">
-
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/modzy/sdk-javascript">
-
 <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/modzy/sdk-javascript">
-
 </div>
-
 <br>
 <br>
-
 <div align="center">
 <a href=https://models.modzy.com/docs/how-to-guides/job-lifecycle style="text-decoration:none">The job lifecycle</a> |
 <a href=https://models.modzy.com/docs/how-to-guides/api-keys style="text-decoration:none">API keys</a> |
 <a href=/samples style="text-decoration:none">Samples</a> |
 <a href=https://models.modzy.com/docs/home/home style="text-decoration:none">Documentation</a>
-
-
 <br>
 <br>
 <br>
 <br>
-
-
-
 <br>
-
 </div>
-
 <br>
-
-
-
 ++++
 
 
@@ -74,7 +47,7 @@
 
 ++++
 <br>
-<div align="center>
+<div align="center">
   <a href="https://asciinema.org/a/B1IkRkW4LjW7sufkjoMWoETH6"><img src="install.gif" style="max-width:100%"/></a>
 </div>
 <br>
@@ -84,62 +57,130 @@ Clone the repository:
 
 - `$ git clone https://github.com/modzy/sdk-javascript.git`
 
-++++
-<p>Use <a href=https://yarnpkg.com/ style="text-decoration:none">yarn</a> to package and install the SDK. </p>
-++++
+Use https://yarnpkg.com/[yarn] to package and install the SDK:
 
-- `$ yarn add ./sdk-javascript`
+Globally:
 
-//no reference to node.js in here but it is in contributing.
+- `$ yarn global add ./sdk-javascript`
 
-== Usage
+In an existing project (directly from github):
+
+- `$ yarn add modzy/sdk-javascript`
 
 
-=== Initialize
+Or you can use https://nodejs.org/[npm]:
 
-Once you have a `model` and `version` identified, authenticate to Modzy with your API key:
+Globally
+
+- `$ npm install -g ./sdk-javascript`
+
+In an existing project (directly from github):
+
+- `$ npm install modzy/sdk-javascript`
+
+== Initialize
+
+Once you have a `model` and `version` identified, get authenticated with your API key.
+
+API keys are security credentials required to perform API requests to Modzy. Our API keys are composed of an ID that is split by a dot into two parts: the prefix and the body. +
+The *prefix* is the API keys' visible part. It’s only used to identify the key and by itself, it’s unable to perform API requests.
+
+link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-users-api-keys[List your API keys]:
+
+[source, js]
+----
+const keys = await modzyClient.getAccountingClient().getAPIKeys('your@email.com');
+keys.forEach(
+    key => {
+      console.log(JSON.stringify(key));
+    }
+);
+----
+
+The *body* is the prefix’s complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can link:https://models.modzy.com/docs/users-keys/api-keys/replace-API-key[replace the API key's body].
+
+link:https://models.modzy.com/docs/users-keys/api-keys/retrieve-full-API-key[Retrieve the API key's body]:
+
+[source, js]
+----
+
+const hash = await modzyClient.getAccountingClient().getKeyBody('yourKey');
+console.log("The hash is: "+hash);
+----
+
+Get authenticated with your API key:
 
 [source, js]
 ----
 const modzy = require('modzy-sdk');
-const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "my_key.modzy");
+const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "prefix.body");
 ----
 
-=== Basic usage
+== Basic usage
 
 ++++
 <br>
-++++
-
-The code below is applicable for `text/plain` input type.
-
-++++
 <div align="center">
-
 <img src="js.gif" alt="basic usage" style="max-width:100%">
-
 </div>
-
 <br>
 ++++
 
-Browse models:
+
+
+=== Browse models
+
+Modzy’s Marketplace includes pre-trained and re-trainable AI models from industry-leading machine learning companies, accelerating the process from data to value.
+
+The Model service drives the Marketplace and can be integrated with other applications, scripts, and systems. It provides routes to list, search, and filter model and model-version details.
+
+link:https://models.modzy.com/docs/marketplace/models/retrieve-models[List models]
 
 [source, js]
 ----
-try{
-    const models = await modzyClient.getAllModels();
-    models.forEach(
-        model => {
-          console.log(JSON.stringify(model));
-        }
-    );
-}
-
+const models = await modzyClient.getAllModels();
+models.forEach(
+    model => {
+      console.log(JSON.stringify(model));
+    }
+);
 ----
 
+Tags help categorize and filter models. They make model browsing easier.
 
-Get a model's details:
+link:https://models.modzy.com/docs/marketplace/tags/retrieve-tags[List tags]:
+
+[source, js]
+----
+const tags = await modzyClient.getAllTags();
+tags.forEach(
+    tag => {
+      console.log(JSON.stringify(tag));
+    }
+);
+----
+
+link:https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags[List models by tag]:
+
+[source, js]
+----
+const tagsModels = await modzyClient.getTagsAndModels("language_and_text");
+tagsModels.models.forEach(
+    model => {
+        console.log(JSON.stringify(model));
+    }
+);
+----
+
+=== Get a model's details
+
+Models accept specific *input file link:https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types[MIME] types*. Some models may require multiple input file types to run data accordingly. In this sample, we use a model that requires `text/plain`.
+
+Models require inputs to have a specific *input name* declared in the job request. This name can be found in the model’s details. In this sample, we use a model that requires `input.txt`.
+
+Additionally, users can set their own input names. When multiple input items are processed in a job, these names are helpful to identify and get each input’s results. In this sample, we use a model that requires `input-1` and `input-2`.
+
+link:https://models.modzy.com/docs/marketplace/models/retrieve-model-details[Get a model's details]:
 
 [source, js]
 ----
@@ -147,8 +188,34 @@ const saModel = await modzyClient.getModel("ed542963de");
 console.log(JSON.stringify(saModel));
 ----
 
+Model specific sample requests are available in the version details and in the Model Details page.
 
-Submit a job providing the model, version, and input file:
+link:https://models.modzy.com/docs/marketplace/versions/retrieve-version-details[Get version details]:
+
+[source, js]
+----
+let modelVersion = await modzyClient.getModelVersion("ed542963de", "0.0.27");
+console.log("inputs:");
+for(key in modelVersion.inputs){
+    let input = modelVersion.inputs[key];
+    console.log(`  key ${input.name}, type ${input.acceptedMediaTypes}, description: ${input.description}`);
+}
+console.log("outputs:");
+for(key in modelVersion.outputs){
+    let output = modelVersion.outputs[key];
+    console.log(`  key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
+}
+----
+
+=== Submit a job and get results
+
+A *job* is the process that sends data to a model, sets the model to run the data, and returns results.
+
+Modzy supports several *input types* such as `text`, `embedded` for Base64 strings, `aws-s3` and `aws-s3-folder` for inputs hosted in buckets, and `jdbc` for inputs stored in databases. In this sample, we use `text`.
+
+link:https://github.com/modzy/sdk-javascript/blob/readmeUpdates/samples.adoc[Here] are samples to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
+
+link:https://models.modzy.com/docs/jobs/jobs/submit-job-text[Submit a job with the model, version, and input items]:
 
 [source, js]
 ----
@@ -162,15 +229,18 @@ let job = await modzyClient.submitJobText(
             );
 ----
 
-Hold until the inference is complete and results become available:
+link:https://models.modzy.com/docs/jobs/jobs/retrieve-job-details[Hold until the inference is complete and results become available]:
 
 [source, js]
 ----
 job = await modzyClient.blockUntilComplete(job);
-
 ----
 
-Get the output results:
+link:https://models.modzy.com/docs/jobs/results/retrieve-results[Get the results]:
+
+Results are available per input item and can be identified with the name provided for each input item upon job request. You can also add an input name to the route and limit the results to any given input item.
+
+Jobs requested for multiple input items may have partial results available prior to job completion.
 
 [source, js]
 ----
@@ -202,7 +272,11 @@ catch(error){
 
 == Features
 
-Currently we support the following api routes:
+Modzy supports link:https://models.modzy.com/docs/features/batch-processing[batch processing], link:https://models.modzy.com/docs/features/explainability[explainability], and link:https://models.modzy.com/docs/features/model-drift[model drift detection].
+
+== APIs
+
+Here is a list of Modzy APIs. To see all the APIs, check our link:https://models.modzy.com/docs/home/home[Documentation].
 
 :doc-pages: https://models.modzy.com/docs/
 [cols=3*, stripes=even]

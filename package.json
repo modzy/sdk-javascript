@@ -1,22 +1,37 @@
 {
   "name": "modzy-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "Javascript SDK for Modzy",
   "main": "dist/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/modzy/sdk-javascript.git"
+  },
+  "keywords": [
+    "Modzy",
+    "SDK"
+  ],
+  "author": "Modzy",
+  "bugs": {
+    "url": "https://github.com/modzy/sdk-javascript/issues"
+  },
+  "homepage": "https://github.com/modzy/sdk-javascript#readme",
   "scripts": {
     "docs": "jsdoc -c jsdoc.json",
     "build": "babel src --out-dir=dist",
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
-    "log4js": "^6.1.2"
+    "log4js": "^6.1.2",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",    
+    "@babel/preset-env": "^7.8.7",
     "babel-jest": "^25.1.0",
     "jest": "^25.1.0",
     "jsdoc": "^3.6.4"

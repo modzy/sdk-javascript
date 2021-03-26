@@ -2,6 +2,7 @@ const axios  = require('axios').default;
 const logger = require('log4js').getLogger("modzy.model-client");
 
 const ApiError = require('./api-error.js');
+const stringSimilarity = require("string-similarity");
 
 /**
  * Utility class that mask the interaction with the model api
@@ -198,14 +199,33 @@ class ModelClient{
     getModelByName(name){
         return this.getModels(
           null, null, null, name,
-            null, null, null, null, null, null,
-            null, null, null, null
+            null, true, null, null, null, null,
+            null, 20, null, "name"
         )
             .then(
                     (models) => {
                         logger.debug(`getModelByName(${name}) models ${models.length}`);
                         if( models !== null && models.length > 0 ){
-                            logger.debug(`getModelByName(${name}) model ${models[0].modelId}`);
+                            if( models.length > 1 ){
+                                return Promise.all(
+                                    models.map( model => this.getModel(model.modelId))
+                                ).then(
+                                    models2 => {
+                                        models2 = models2.map(
+                                            model => {
+                                                model.distance = stringSimilarity.compareTwoStrings(name, model.name);
+                                                return model;
+                                            }
+                                        ).sort(
+                                            (a,b) => a.distance - b.distance
+                                        );
+                                        models2.forEach(model=>logger.debug(`${model.modelId} ${model.name} ${model.distance}`));
+                                        logger.debug(`getModelByName(${name}) model ${models2[models2.length-1].modelId} :: ${models2[models2.length-1].name}`);
+                                        return models2[models2.length-1];
+                                    }
+                                );
+                            }
+                            logger.debug(`getModelByName(${name}) model ${models[0].modelId} `);
                             return this.getModel(models[0].modelId);
                         }
                         else{

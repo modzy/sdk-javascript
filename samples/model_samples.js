@@ -48,13 +48,14 @@ async function modelsSample(){
     models = await modzyClient.getModels(
         /*modelId*/null, /*author*/'Open Source', /*createdByEmail*/null, /*name*/'Image', /*description*/null, 
         /*isActive*/true, /*isExpired*/null, /*isRecommended*/null, /*lastActiveDateTime*/null, /*expirationDateTime*/null,
-        /*page*/null, /*perPage*/100, /*direction*/null, /*sortBy*/null);
+        /*page*/null, /*perPage*/1, /*direction*/null, /*sortBy*/null);
     logger.info( `Active open source models which name starts with 'Image' ${models.length}` );
     // Get model details
     // the models route didn't return much info about the models, just modelId, latestVersion and versions:
     for( mKey in models){
         let model = models[mKey];
-        logger.info(Object.keys(model).toString().replace('\n', ' '));
+        //logger.info(Object.keys(model).toString().replace('\n', ' '));
+        logger.info(model);
         // In order to get more info about the models you need to get the details by identifier
         model = await modzyClient.getModel(model.modelId);
         // then you'll get all the details about the model
