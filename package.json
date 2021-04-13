@@ -18,6 +18,7 @@
   "homepage": "https://github.com/modzy/sdk-javascript#readme",
   "scripts": {
     "prepare": "babel src --out-dir=dist",
+    "prepack": "babel src --out-dir=dist",
     "docs": "jsdoc -c jsdoc.json",
     "build": "babel src --out-dir=dist",
     "test": "jest --detectOpenHandles"
