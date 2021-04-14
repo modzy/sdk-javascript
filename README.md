@@ -38,7 +38,7 @@ You can also install from Github:
 
 - `$ npm install modzy/sdk-javascript`
 
-== Initialize
+## Initialize
 
 Once you have a `model` and `version` identified, get authenticated with your API key.
 
