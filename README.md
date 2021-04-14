@@ -1,6 +1,8 @@
 # Modzy Javascript SDK
 
+<div style="color:black">
 ![Modzy Logo](https://www.modzy.com/wp-content/uploads/2021/02/logo-wh-4.png)
+</div>
 
 <div align="center">
 
