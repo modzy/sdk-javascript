@@ -2,13 +2,20 @@
 
 ![Modzy Logo](https://www.modzy.com/wp-content/uploads/2019/10/modzy-logo-tm.svg)
 
-Modzy's Javascript SDK queries models, submits inference jobs, and returns results directly to your editor.
+<div align="center">
+
+**Modzy's Javascript SDK queries models, submits inference jobs, and returns results directly to your editor.**
+
 
 ![GitHub contributors](https://img.shields.io/github/contributors/modzy/sdk-javascript)
 ![GitHub last commit](https://img.shields.io/github/last-commit/modzy/sdk-javascript)
 ![GitHub Release Date](https://img.shields.io/github/issues-raw/modzy/sdk-javascript)
 
-[The job lifecycle](https://models.modzy.com/docs/how-to-guides/job-lifecycle) | [API Keys](https://models.modzy.com/docs/how-to-guides/api-keys) | [Samples](https://github.com/modzy/sdk-javascript/tree/main/samples) | [Documentation](https://models.modzy.com/docs)
+
+[The job lifecycle](https://models.modzy.com/docs/how-to-guides/job-lifecycle) | [API Keys](https://models.modzy.com/docs/how-to-guides/api-keys) | [Samples](https://github.com/modzy/sdk-javascript/tree/main/samples) | [Documentation](https://
+models.modzy.com/docs)
+
+</div>
 
 ## Installation
 
