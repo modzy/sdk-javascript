@@ -1,6 +1,6 @@
 # Modzy Javascript SDK
 
-![Modzy Logo](https://www.modzy.com/wp-content/uploads/2019/10/modzy-logo-tm.svg)
+![Modzy Logo](https://www.modzy.com/wp-content/uploads/2021/02/logo-wh-4.png)
 
 <div align="center">
 
