@@ -1,8 +1,8 @@
 {
   "name": "@modzy/modzy-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Javascript SDK for Modzy",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "Booz Allen Public License v1.0",
   "main": "dist/main.js",
   "repository": {
     "type": "git",
