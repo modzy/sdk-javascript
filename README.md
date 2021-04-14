@@ -119,13 +119,13 @@ tagsModels.models.forEach(
 
 ### Get a model's details
 
-Models accept specific *input file link:https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types[MIME] types*. Some models may require multiple input file types to run data accordingly. In this sample, we use a model that requires `text/plain`.
+Models accept specific *input file [MIME](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) types*. Some models may require multiple input file types to run data accordingly. In this sample, we use a model that requires `text/plain`.
 
 Models require inputs to have a specific *input name* declared in the job request. This name can be found in the model’s details. In this sample, we use a model that requires `input.txt`.
 
 Additionally, users can set their own input names. When multiple input items are processed in a job, these names are helpful to identify and get each input’s results. In this sample, we use a model that requires `input-1` and `input-2`.
 
-link:https://models.modzy.com/docs/marketplace/models/retrieve-model-details[Get a model's details]:
+[Get a model's details](https://models.modzy.com/docs/marketplace/models/retrieve-model-details):
 
 ```javascript
 const saModel = await modzyClient.getModel("ed542963de");
@@ -206,11 +206,11 @@ try{
 }
 ```
 
-== Features
+## Features
 
 Modzy supports [batch processing](https://models.modzy.com/docs/features/batch-processing), [explainability](https://models.modzy.com/docs/features/explainability), and [model drift detection](https://models.modzy.com/docs/features/model-drift).
 
-== APIs
+## APIs
 
 Here is a list of Modzy APIs. To see all the APIs, check our [Documentation](https://models.modzy.com/docs/home/home).
 
