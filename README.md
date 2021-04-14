@@ -24,21 +24,21 @@ Use [yarn](https://yarnpkg.com/) to package and install the SDK:
 
 Globally:
 
-- `$ yarn global add modzy-sdk`
+- `$ yarn global add @modzy/modzy-sdk`
 
 In an existing project:
 
-- `$ yarn add modzy-sdk`
+- `$ yarn add @modzy/modzy-sdk`
 
 Or you can use [npm](https://nodejs.org/):
 
 Globally
 
-- `$ npm install -g modzy-sdk`
+- `$ npm install -g @modzy/modzy-sdk`
 
 In an existing project:
 
-- `$ npm install modzy-sdk`
+- `$ npm install @modzy/modzy-sdk`
 
 You can also install from Github:
 
