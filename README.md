@@ -12,8 +12,7 @@
 ![GitHub Release Date](https://img.shields.io/github/issues-raw/modzy/sdk-javascript)
 
 
-[The job lifecycle](https://models.modzy.com/docs/how-to-guides/job-lifecycle) | [API Keys](https://models.modzy.com/docs/how-to-guides/api-keys) | [Samples](https://github.com/modzy/sdk-javascript/tree/main/samples) | [Documentation](https://
-models.modzy.com/docs)
+[The job lifecycle](https://models.modzy.com/docs/how-to-guides/job-lifecycle) | [API Keys](https://models.modzy.com/docs/how-to-guides/api-keys) | [Samples](https://github.com/modzy/sdk-javascript/tree/main/samples) | [Documentation](https://models.modzy.com/docs)
 
 </div>
 
