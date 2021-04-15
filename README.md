@@ -18,7 +18,7 @@
 
 ## Installation
 
-[![installation](install.gif)](https://asciinema.org/a/B1IkRkW4LjW7sufkjoMWoETH6)
+[![installation](https://github.com/modzy/sdk-javascript/raw/main/install.gif)](https://asciinema.org/a/B1IkRkW4LjW7sufkjoMWoETH6)
 
 Use [yarn](https://yarnpkg.com/) to package and install the SDK:
 
@@ -80,7 +80,7 @@ const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "prefix.bod
 
 ## Basic usage
 
-![Basic Usage](js.gif)
+![Basic Usage](https://github.com/modzy/sdk-javascript/raw/main/js.gif)
 
 ### Browse models
 
