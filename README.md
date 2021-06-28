@@ -44,38 +44,28 @@ You can also install from Github:
 
 - `$ npm install modzy/sdk-javascript`
 
-## Initialize
+## Get your API key
 
 Once you have a `model` and `version` identified, get authenticated with your API key.
 
-API keys are security credentials required to perform API requests to Modzy. Our API keys are composed of an ID that is split by a dot into two parts: the prefix and the body. +
-The *prefix* is the API keys' visible part. It’s only used to identify the key and by itself, it’s unable to perform API requests.
+API keys are security credentials required to perform API requests to Modzy. Our API keys are composed of an ID that is split by a dot into two parts: a public and private part.
 
-[List your API keys](https://models.modzy.com/docs/users-keys/api-keys/retrieve-users-api-keys):
+The *public* part is the API keys' visible part only used to identify the key and by itself, it’s unable to perform API requests.
 
-```javascript
-const keys = await modzyClient.getAccountingClient().getAPIKeys('your@email.com');
-keys.forEach(
-    key => {
-        console.log(JSON.stringify(key));
-    }
-);
-```
+The *private* part is the public part's complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can [replace the API key](https://models.modzy.com/docs/users-keys/api-keys/replace-API-key).
 
-The *body* is the prefix’s complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can [replace the API key's body](https://models.modzy.com/docs/users-keys/api-keys/replace-API-key).
 
-[Retrieve the API key's body](https://models.modzy.com/docs/users-keys/api-keys/retrieve-full-API-key):
+Find your API key in your user profile. To get your full API key click on "Get key":
 
-```javascript
-const hash = await modzyClient.getAccountingClient().getKeyBody('yourKey');
-console.log("The hash is: "+hash);
-```
+<img src="key.png" alt="get key" width="10%"/>
+
+## Initialize
 
 Get authenticated with your API key:
 
 ```javascript
 const modzy = require('modzy-sdk');
-const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "prefix.body");
+const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "API Key");
 ```
 
 ## Basic usage
