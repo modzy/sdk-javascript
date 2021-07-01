@@ -160,17 +160,17 @@ class JobClient{
         ).then(
             (openJob)=>{
                 job = openJob;
-                const inputPromises = [];
+                let inputPomise = Promise.resolve(openJob);
                 Object.keys(fileSources).forEach(
                     inputItemKey => {
                         Object.keys(fileSources[inputItemKey]).forEach(
                             dataItemKey => {
-                                inputPromises.push(this.appendInput(openJob, inputItemKey, dataItemKey, fileSources[inputItemKey][dataItemKey]));
+                                inputPomise = inputPomise.then( () => this.appendInput(openJob, inputItemKey, dataItemKey, fileSources[inputItemKey][dataItemKey]) );
                             }
                         );
                     }
                 );
-                return Promise.all(inputPromises);
+                return inputPomise;
             }
         ).then(
             (submitResults)=>{
