@@ -1,6 +1,7 @@
 const axios  = require('axios').default;
 const logger = require('log4js').getLogger("modzy.job-client");
-
+const fs = require('fs');
+const FormData = require('form-data');
 const ApiError = require('./api-error.js');
 
 /**
@@ -111,6 +112,230 @@ class JobClient{
             );
     }
 
+
+    /**
+     *
+     * Create a new job for the model at the specific version with the text inputs provided.
+     *
+     * @param {string} modelId - the model id string
+     * @param {versionId} versionId - version id string
+     * @param {Object[]} textSources - The source(s) of the model
+     * @return {Object} the updated instance of the Job returned by Modzy API
+     * @throws {ApiError} If there is something wrong with the service or the call
+     */
+    submitJobText(modelId, versionId, textSources) {
+        return this.submitJob(
+            {
+                "model": {
+                    "identifier": modelId,
+                    "version": versionId
+                },
+                "input": {
+                    "type": "text",
+                    "sources": textSources
+                }
+            }
+        );
+    }
+
+    /**
+     *
+     * Create a new job for the model at the specific version with the embedded inputs provided.
+     *
+     * @param {string} modelId - the model id string
+     * @param {string} versionId - version id string
+     * @param {Object[]} fileSources the source(s) of the model
+     * @return {Object} the updated instance of the Job returned by Modzy API
+     * @throws {ApiError} if there is something wrong with the service or the call
+     */
+    submitJobFiles(modelId, versionId, fileSources) {
+        let job = {};
+        return this.submitJob(
+            {
+                "model": {
+                    "identifier": modelId,
+                    "version": versionId
+                }
+            }
+        ).then(
+            (openJob)=>{
+                job = openJob;
+                const inputPromises = [];
+                Object.keys(fileSources).forEach(
+                    inputItemKey => {
+                        Object.keys(fileSources[inputItemKey]).forEach(
+                            dataItemKey => {
+                                inputPromises.push(this.appendInput(openJob, inputItemKey, dataItemKey, fileSources[inputItemKey][dataItemKey]));
+                            }
+                        );
+                    }
+                );
+                return Promise.all(inputPromises);
+            }
+        ).then(
+            (submitResults)=>{
+                return this.closeJob(job);
+            }
+        ).catch(
+            (apiError) => {
+                //Try to cancel the job
+                return this.cancelJob(job.jobIdentifier)
+                    .then((_)=>{throw(apiError);})
+                    .catch((_)=>{throw(apiError);});
+            }
+        );
+    }
+
+    /**
+     *
+     * Create a new job for the model at the specific version with the embedded inputs provided.
+     *
+     * @param {string} modelId - the model id string
+     * @param {string} versionId - version id string
+     * @param {string} mediaType - the media type of the embedded source
+     * @param {Object[]} embeddedSources the source(s) of the model
+     * @return {Object} the updated instance of the Job returned by Modzy API
+     * @throws {ApiError} if there is something wrong with the service or the call
+     */
+    submitJobEmbedded(modelId, versionId, mediaType, embeddedSources) {
+        let encodedSources = {};
+        Object.keys(embeddedSources).forEach(
+            sourceKey => {
+                let source = {};
+                Object.keys(embeddedSources[sourceKey]).forEach(
+                    key => {
+                        source[key] =
+                            "data:" + mediaType +
+                            ";base64," +
+                            Buffer.from(embeddedSources[sourceKey][key], 'binary').toString('base64');
+                        logger.debug("source[" + sourceKey + "][" + key + "] :: " + source[key]);
+                    }
+                );
+                encodedSources[sourceKey] = source;
+            }
+        );
+        return this.submitJob(
+            {
+                "model": {
+                    "identifier": modelId,
+                    "version": versionId
+                },
+                "input": {
+                    "type": "embedded",
+                    "sources": encodedSources
+                }
+            }
+        );
+    }
+
+    /**
+     *
+     * Create a new job for the model at the specific version with the aws-s3 inputs provided.
+     *
+     * @param {string} modelId - the model id string
+     * @param {string} versionId - version id string
+     * @param {string} accessKeyID - access key of aws-s3
+     * @param {string} secretAccessKey - secret access key of aws-s3
+     * @param {string} region - aws-s3 region
+     * @param {Object[]} awss3Sources - the source(s) of the model
+     * @return {Object} the updated instance of the Job returned by Modzy API
+     * @throws {ApiError} if there is something wrong with the service or the call
+     */
+    submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources) {
+        return this.submitJob(
+            {
+                "model": {
+                    "identifier": modelId,
+                    "version": versionId
+                },
+                "input": {
+                    "type": "aws-s3",
+                    "accessKeyID": accessKeyID,
+                    "secretAccessKey": secretAccessKey,
+                    "region": region,
+                    "sources": awss3Sources
+                }
+            }
+        );
+    }
+
+    /**
+     *
+     * Create a new job for the model at the specific version with the jdbc query provided,
+     *
+     * Modzy will create a data source with the parameters provided and will execute
+     * the query provided, then will match the inputs defined of the model with the columns
+     * of the resultset.
+     *
+     * @param {string} modelId - the model id string
+     * @param {string} versionId - version id string
+     * @param {string} url - connection url to the database
+     * @param {string} username - database username
+     * @param {string} password - database password
+     * @param {string} driver - fully qualified name of the driver class for jdbc
+     * @param {string} query - the query to get the inputs of the model
+     * @return {Object} the updated instance of the Job returned by Modzy API
+     * @throws {ApiError} if there is something wrong with the service or the call
+     */
+    submitJobJDBC(modelId, versionId, url, username, password, driver, query) {
+        return this.submitJob(
+            {
+                "model": {
+                    "identifier": modelId,
+                    "version": versionId
+                },
+                "input": {
+                    "type": "jdbc",
+                    "url": url,
+                    "username": username,
+                    "password": password,
+                    "driver": driver,
+                    "query": query
+                }
+            }
+        );
+    }
+
+    /**
+     *
+     * Utility method that wait until the job finish.
+     *
+     * This method first check the status of the job and wait until the job reach
+     * the completed/error status by passing through  the submitted and in_progress state.
+     *
+     * @param {Object} job The job to block
+     * @return {Object} A updated instance of the job in a final state
+     * @throws {ApiError} if there is something wrong with the service or the call
+     */
+    blockUntilComplete(job) {
+        logger.debug(`blockUntilComplete(${job.jobIdentifier}) :: ${job.status}`);
+        return new Promise(
+            (resolve, reject) => {
+                setTimeout(
+                    () => {
+                        this.getJob(job.jobIdentifier)
+                            .then(
+                                (updatedJob) => {
+                                    if (updatedJob.status === "SUBMITTED" || updatedJob.status === "IN_PROGRESS") {
+                                        resolve(this.blockUntilComplete(updatedJob));
+                                    }
+                                    logger.debug(`blockUntilComplete(${updatedJob.jobIdentifier}}) :: returning :: ${updatedJob.status}`);
+                                    resolve(updatedJob);
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    logger.error(error);
+                                    reject(error);
+                                }
+                            );
+                    },
+                    2000
+                );
+            }
+        );
+    }
+
     /**
      * 
      * @param {*} job 
@@ -132,6 +357,63 @@ class JobClient{
             .catch(
                 ( error )=>{
                     throw( new ApiError( error ) );                  
+                }
+            );
+    }
+
+    appendInput(job, inputItemKey, dataItemKey, value){
+        const requestURL = `${this.baseURL}/${job.jobIdentifier}/${inputItemKey}/${dataItemKey}`;
+        logger.debug(`appendInput(${job.jobIdentifier}, ${inputItemKey}, ${dataItemKey}) POST ${requestURL}`);
+        const data   = new FormData();
+        if( value.byteLength !== undefined ){
+            data.append("input", value, dataItemKey );
+        } else{
+            //If is a file we need to trick axios
+            data.append("input", fs.createReadStream(value), { knownLength: fs.statSync(value).size } );
+        }
+
+        return axios.post(
+            requestURL,
+            data,
+            {
+                headers: {
+                    ...data.getHeaders(),
+                    "Content-Length": data.getLengthSync(),
+                    'Authorization': `ApiKey ${this.apiKey}`
+                }
+            }
+        )
+            .then(
+                ( response )=>{
+                    logger.info(`appendInput(${job.jobIdentifier}, ${inputItemKey}, ${dataItemKey}) :: ${response.status} ${response.statusText}`);
+                    return job;
+                }
+            )
+            .catch(
+                ( error )=>{
+                    throw( new ApiError( error ) );
+                }
+            );
+    }
+
+    closeJob(job){
+        const requestURL = `${this.baseURL}/${job.jobIdentifier}/close`;
+        logger.debug(`closeJob(${job.jobIdentifier}) POST ${requestURL}`);
+        return axios.post(
+            requestURL,
+            {},
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+            .then(
+                ( response )=>{
+                    logger.info(`closeJob(${job.jobIdentifier}) :: ${response.status} ${response.statusText}`);
+                    response.data.status = "SUBMITTED";
+                    return response.data;
+                }
+            )
+            .catch(
+                ( error )=>{
+                    throw( new ApiError( error ) );
                 }
             );
     }
@@ -170,7 +452,7 @@ class JobClient{
      */
     cancelJob(jobId){
         const requestURL = `${this.baseURL}/${jobId}`;
-        logger.debug(`cancelJob(${jobId}) GET ${requestURL}`);
+        logger.debug(`cancelJob(${jobId}) DELETE ${requestURL}`);
         return axios.delete(
                 requestURL,
                 {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
