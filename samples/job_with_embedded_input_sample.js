@@ -56,7 +56,7 @@ async function createJobWithEmbeddedInput(){
 
 		// Send the job:
 		// An embedded input is a byte array encoded as a string in Base64, that's very handy for small to middle size files, for
-		// bigger files can be a memory issue because you need to load the file in memory (load + encode).
+		// bigger files can be a memory issue because you need to load the file in memory (load + encode), use submitJobFiles instead.
 		const imageBytes  = fs.readFileSync('samples/image.png');
 		let configBytes = fs.readFileSync('samples/config.json');
 		// With the info about the model (identifier), the model version (version string, input/output keys), you are ready to

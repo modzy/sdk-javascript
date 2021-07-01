@@ -54,8 +54,7 @@ async function createJobWithFileInput(){
             logger.info(`    key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
         }
 		// Send the job:
-		// An embedded input is a byte array encoded as a string in Base64, that's very handy for small to middle size files, for
-		// bigger files can be a memory issue because you need to load the file in memory (load + encode).
+        // A file input can be a byte array or any file path. This input type fits for any size files.		
         const imagePath  = 'samples/image.png';
         const configPath = 'samples/config.json';
 		// With the info about the model (identifier), the model version (version string, input/output keys), you are ready to
