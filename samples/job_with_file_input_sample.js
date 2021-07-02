@@ -54,7 +54,7 @@ async function createJobWithFileInput(){
             logger.info(`    key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
         }
 		// Send the job:
-        // A file input can be a byte array or any file path. This input type fits for any size files.		
+        // A file input can be a byte array or any file path. This input type fits files of any size.
         const imagePath  = 'samples/image.png';
         const configPath = 'samples/config.json';
 		// With the info about the model (identifier), the model version (version string, input/output keys), you are ready to
