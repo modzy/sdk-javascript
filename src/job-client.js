@@ -115,7 +115,7 @@ class JobClient{
 
     /**
      *
-     * Create a new job for the model at the specific version with the text inputs provided.
+     * Create a new job for a specific model and version with the text inputs provided.
      *
      * @param {string} modelId - the model id string
      * @param {versionId} versionId - version id string
@@ -140,7 +140,7 @@ class JobClient{
 
     /**
      *
-     * Create a new job for the model at the specific version with the embedded inputs provided.
+     * Create a new job for a specific model and version with the embedded inputs provided.
      *
      * @param {string} modelId - the model id string
      * @param {string} versionId - version id string
@@ -188,7 +188,7 @@ class JobClient{
 
     /**
      *
-     * Create a new job for the model at the specific version with the embedded inputs provided.
+     * Create a new job for a specific model and version with the embedded inputs provided.
      *
      * @param {string} modelId - the model id string
      * @param {string} versionId - version id string
@@ -230,7 +230,7 @@ class JobClient{
 
     /**
      *
-     * Create a new job for the model at the specific version with the aws-s3 inputs provided.
+     * Create a new job for a specific model and version with the aws-s3 inputs provided.
      *
      * @param {string} modelId - the model id string
      * @param {string} versionId - version id string
@@ -261,7 +261,7 @@ class JobClient{
 
     /**
      *
-     * Create a new job for the model at the specific version with the jdbc query provided,
+     * Create a new job for a specific model and version with the jdbc query provided,
      *
      * Modzy will create a data source with the parameters provided and will execute
      * the query provided, then will match the inputs defined of the model with the columns
@@ -298,13 +298,13 @@ class JobClient{
 
     /**
      *
-     * Utility method that wait until the job finish.
+     * Utility method that waits until the job finishes.
      *
-     * This method first check the status of the job and wait until the job reach
-     * the completed/error status by passing through  the submitted and in_progress state.
+     * This method first checks the status of the job and waits until the job reaches
+     * the completed/error status by passing through the submitted and in_progress states.
      *
      * @param {Object} job The job to block
-     * @return {Object} A updated instance of the job in a final state
+     * @return {Object} an updated instance of the job in a final state
      * @throws {ApiError} if there is something wrong with the service or the call
      */
     blockUntilComplete(job) {
