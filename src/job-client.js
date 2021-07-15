@@ -3,6 +3,9 @@ const logger = require('log4js').getLogger("modzy.job-client");
 const fs = require('fs');
 const FormData = require('form-data');
 const ApiError = require('./api-error.js');
+const parseUrl = require('url').parse;
+const humanReadToBytes = require("./size");
+const {byteArrayToChunks, fileToChunks} = require("./utils");
 
 /**
  * Utility class that mask the interaction with the job api
@@ -150,6 +153,7 @@ class JobClient{
      */
     submitJobFiles(modelId, versionId, fileSources) {
         let job = {};
+        let chunkSize = 1024*1024;
         return this.submitJob(
             {
                 "model": {
@@ -160,12 +164,25 @@ class JobClient{
         ).then(
             (openJob)=>{
                 job = openJob;
-                let inputPomise = Promise.resolve(openJob);
+                return this.getFeatures();
+            }
+        ).then(
+            (features)=>{
+                try{
+                    return humanReadToBytes(features["inputChunkMaximumSize"]);
+                } catch (error){
+                    logger.warn(`unexpected error extracting inputChunkMaximumSize from ${features}, error: ${error}`);
+                    return 1024*1024;//default 1Mi
+                }
+            }
+        ).then(
+            (maxChunkSize)=>{
+                let inputPomise = Promise.resolve(job);
                 Object.keys(fileSources).forEach(
                     inputItemKey => {
                         Object.keys(fileSources[inputItemKey]).forEach(
                             dataItemKey => {
-                                inputPomise = inputPomise.then( () => this.appendInput(openJob, inputItemKey, dataItemKey, fileSources[inputItemKey][dataItemKey]) );
+                                inputPomise = inputPomise.then( () => this.appendInput(job, inputItemKey, dataItemKey, fileSources[inputItemKey][dataItemKey], maxChunkSize) );
                             }
                         );
                     }
@@ -177,7 +194,7 @@ class JobClient{
                 return this.closeJob(job);
             }
         ).catch(
-            (apiError) => {
+            (apiError) => {                
                 //Try to cancel the job
                 return this.cancelJob(job.jobIdentifier)
                     .then((_)=>{throw(apiError);})
@@ -361,37 +378,46 @@ class JobClient{
             );
     }
 
-    appendInput(job, inputItemKey, dataItemKey, value){
+    appendInput(job, inputItemKey, dataItemKey, inputValue, chunkSize){
         const requestURL = `${this.baseURL}/${job.jobIdentifier}/${inputItemKey}/${dataItemKey}`;
-        logger.debug(`appendInput(${job.jobIdentifier}, ${inputItemKey}, ${dataItemKey}) POST ${requestURL}`);
-        const data   = new FormData();
-        if( value.byteLength !== undefined ){
-            data.append("input", value, dataItemKey );
-        } else{
-            //If is a file we need to trick axios
-            data.append("input", fs.createReadStream(value), { knownLength: fs.statSync(value).size } );
-        }
 
-        return axios.post(
-            requestURL,
-            data,
-            {
-                headers: {
-                    ...data.getHeaders(),
-                    "Content-Length": data.getLengthSync(),
-                    'Authorization': `ApiKey ${this.apiKey}`
-                }
-            }
-        )
+        let iterator;
+        if( inputValue.byteLength !== undefined ){
+            iterator = byteArrayToChunks(inputValue, chunkSize);
+        } else {
+            iterator = fileToChunks(inputValue, chunkSize);
+        }
+        return this.appendInputChunk(requestURL, iterator, chunkSize, dataItemKey, 0);
+    }
+
+    appendInputChunk(requestURL, asyncGenerator, chunkSize, dataItemKey, chunkCount){
+        return asyncGenerator
+            .next()
             .then(
-                ( response )=>{
-                    logger.info(`appendInput(${job.jobIdentifier}, ${inputItemKey}, ${dataItemKey}) :: ${response.status} ${response.statusText}`);
-                    return job;
-                }
-            )
-            .catch(
-                ( error )=>{
-                    throw( new ApiError( error ) );
+                (entry)=>{
+                    if( entry && entry.value ){
+                        return new Promise(
+                            (resolve, reject)=>{
+                                logger.debug(`appendInputChunk(${requestURL}) [${chunkCount}] POST ${entry.value.length} bytes`);
+                                const requestObj = parseUrl(requestURL);
+                                requestObj.headers = { 'Authorization': `ApiKey ${this.apiKey}`};
+                                const data   = new FormData({maxDataSize: chunkSize} );
+                                data.append("input", entry.value, dataItemKey );
+                                data.submit(requestObj, function(error, response){
+                                    logger.info(`appendInputChunk(${requestURL}) [${chunkCount}] :: ${response.statusCode} ${response.statusMessage}`);
+                                    if( error || response.statusCode >= 400){
+                                        reject( new ApiError( error, requestURL, response.statusCode, response.statusMessage ) );
+                                    }
+                                    resolve(response.resume());
+                                });
+                            }
+                        ).then(
+                            (_)=>{
+                                return this.appendInputChunk(requestURL, asyncGenerator, chunkSize, dataItemKey,chunkCount+1);
+                            }
+                        );
+                    }
+                    return null;
                 }
             );
     }
@@ -440,6 +466,31 @@ class JobClient{
             .catch(
                 ( error )=>{
                     throw( new ApiError( error ) ); 
+                }
+            );
+    }
+
+    /**
+     * Call the Modzy API Service that return the jobs features
+     * @return {Object} a updated job instance
+     * @throws {ApiError} If there is something wrong with the sevice or the call
+     */
+    getFeatures(){
+        const requestURL = `${this.baseURL}/features`;
+        logger.debug(`getFeatures() GET ${requestURL}`);
+        return axios.get(
+            requestURL,
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+            .then(
+                ( response )=>{
+                    logger.info(`getFeatures() :: ${response.status} ${response.statusText}`);
+                    return response.data;
+                }
+            )
+            .catch(
+                ( error )=>{
+                    throw( new ApiError( error ) );
                 }
             );
     }
