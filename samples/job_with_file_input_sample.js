@@ -22,7 +22,7 @@ const modzyClient = new modzy.ModzyClient(BASE_URL, API_KEY);
 
 // Create a Job with an embedded input, wait, and retrieve results:
 
-async function createJobWithEmbeddedInput(){
+async function createJobWithFileInput(){
 	try {
 		// Get the model object:
         // If you already know the model identifier (i.e.: you got from the URL of the model details page or the input sample),
@@ -53,27 +53,25 @@ async function createJobWithEmbeddedInput(){
             let output = modelVersion.outputs[key];
             logger.info(`    key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
         }
-
 		// Send the job:
-		// An embedded input is a byte array encoded as a string in Base64, that's very handy for small to middle size files, for
-		// bigger files can cause memory issues because you need to load the file in the memory (load + encode).
-		const imageBytes  = fs.readFileSync('samples/image.png');
-		let configBytes = fs.readFileSync('samples/config.json');
+        // A file input can be a byte array or any file path. This input type fits files of any size.
+        const imagePath  = 'samples/image.png';
+        const configPath = 'samples/config.json';
 		// With the info about the model (identifier), the model version (version string, input/output keys), you are ready to
 		// submit the job. Just prepare the source object:
-		let sources = {"source-key": {"input": imageBytes, "config.json": configBytes}};
+		let sources = {"source-key": {"input": imagePath, "config.json": configPath}};
 		// An inference job groups input data that you send to a model. You can send any amount of inputs to
 		// process and you can identify and refer to a specific input by the key that you assign, for example we can add:
-		sources["second-key"] = {"input": imageBytes, "config.json":configBytes}
+		sources["second-key"] = {"input": imagePath, "config.json": configPath}
 		// You don’t need to load all the inputs from the files, just convert to bytes as follows:
-		configBytes = Buffer.from(JSON.stringify({"languages":["spa"]}));		
-		sources["another-key"] = {"input": imageBytes, "config.json":configBytes}
+		const configBytes = Buffer.from(JSON.stringify({"languages":["spa"]}));
+		sources["another-key"] = {"input": imagePath, "config.json":configBytes}
 		// If you send an incorrect input key, the model fails to process the input.
-		sources["wrong-key"] = {"a.wrong.key": imageBytes, "config.json":configBytes}
+		sources["wrong-key"] = {"a.wrong.key": imagePath, "config.json":configPath}
 		// If you send a correct input key, but some wrong values, the model fails to process the input.
-		sources["wrong-value"] = {"input": configBytes, "config.json":imageBytes}
+		sources["wrong-value"] = {"input": configPath, "config.json":imagePath}
 		// When you have all your inputs ready, you can use our helper method to submit the job as follows:        
-        let job = await modzyClient.submitJobEmbedded(model.modelId,modelVersion.version, "application/octet-stream", sources);
+        let job = await modzyClient.submitJobFiles(model.modelId,modelVersion.version, sources);
         // Modzy creates the job and queue for processing. The job object contains all the info that you need to keep track
         // of the process, the most important being the job identifier and the job status.
         logger.info("job: "+job.jobIdentifier+" "+job.status);
@@ -113,4 +111,4 @@ async function createJobWithEmbeddedInput(){
 }
 
 
-createJobWithEmbeddedInput();
+createJobWithFileInput();
