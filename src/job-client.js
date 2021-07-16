@@ -471,8 +471,8 @@ class JobClient{
     }
 
     /**
-     * Call the Modzy API Service that return the jobs features
-     * @return {Object} a updated job instance
+     * Call Modzy's API Service to return job features
+     * @return {Object} An updated job instance
      * @throws {ApiError} If there is something wrong with the sevice or the call
      */
     getFeatures(){
