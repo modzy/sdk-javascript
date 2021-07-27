@@ -213,14 +213,14 @@ Here is a list of Modzy APIs. To see all the APIs, check our [Documentation](htt
 
 | Feature | Code |Api route
 | ---     | ---  | ---
-|Get all models|client.models.get_all()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-all-models-versions)|
-|List models|client.models.get_models()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
-|Get model details|client.models.get()|[api/models/:model-id](https://models.modzy.com/docs/marketplace/models/retrieve-model-details)|
-|List models by name|client.models.get_by_name()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
+|Get all models|modzyClient.getAllModels()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-all-models-versions)|
+|List models|modzyClient.getModels()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
+|Get model details|modzyClient.getModel()|[api/models/:model-id](https://models.modzy.com/docs/marketplace/models/retrieve-model-details)|
+|List models by name|modzyClient.getModelByName()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
 |List models by tag|modzyClient.getAllTags()|[api/models/tags](https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags)|
-|Get related models|client.models.get_related()|[api/models/:model-id/related-models](https://models.modzy.com/docs/marketplace/models/retrieve-related-models)|
-|Get a model's versions|client.models.get_versions()|[api/models/:model-id/versions](https://models.modzy.com/docs/marketplace/versions/retrieve-versions)|
-|Get version details|client.models.get_version()|[api/models/:model-id/versions/:version-id](https://models.modzy.com/docs/marketplace/versions/retrieve-version-details)|
+|Get related models|modzyClient.getRelatedModels()|[api/models/:model-id/related-models](https://models.modzy.com/docs/marketplace/models/retrieve-related-models)|
+|Get a model's versions|modzyClient.getModelClient().getModelVersions()|[api/models/:model-id/versions](https://models.modzy.com/docs/marketplace/versions/retrieve-versions)|
+|Get version details|modzyClient.getModelVersion()|[api/models/:model-id/versions/:version-id](https://models.modzy.com/docs/marketplace/versions/retrieve-version-details)|
 |List tags|modzyClient.getAllTags()|[api/models/tags](https://models.modzy.com/docs/marketplace/tags/retrieve-tags)|
 |Submit a Job (Text)|modzyClient.submitJobText()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-text)|
 |Submit a Job (Embedded)|modzyClient.submitJobEmbedded()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-embedded)|
