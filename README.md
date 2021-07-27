@@ -213,24 +213,24 @@ Here is a list of Modzy APIs. To see all the APIs, check our [Documentation](htt
 
 | Feature | Code |Api route
 | ---     | ---  | ---
-|Retrieve all models|client.models.get_all()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-all-models-versions)|
-|Retrieve some models|client.models.get_models()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
-|Retrieve model details|client.models.get()|[api/models/:model-id](https://models.modzy.com/docs/marketplace/models/retrieve-model-details)|
-|Retrieve model by name|client.models.get_by_name()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
-|Retrieve related models|client.models.get_related()|[api/models/:model-id/related-models](https://models.modzy.com/docs/marketplace/models/retrieve-related-models)|
-|Retrieve model versions|client.models.get_versions()|[api/models/:model-id/versions](https://models.modzy.com/docs/marketplace/versions/retrieve-versions)|
-|Retrieve model version details|client.models.get_version()|[api/models/:model-id/versions/:version-id](https://models.modzy.com/docs/marketplace/versions/retrieve-version-details)|
-|Retrieve all tags|modzyClient.getAllTags()|[api/models/tags](https://models.modzy.com/docs/marketplace/tags/retrieve-tags)|
-|Retrieve Tags and Models|modzyClient.getTagsAndModels()|[api/models/tags/:tag-id](https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags) |
-|Submit a Job (Text)|modzyClient.submitJobText()|[api/jobs](https://models.modzy.com/docs/jobs/job-inputs/submit-job)|
-|Submit a Job (Embedded)|modzyClient.submitJobEmbedded()|[api/jobs](https://models.modzy.com/docs/jobs/job-inputs/submit-job)|
-|Submit a Job (AWS S3)|modzyClient.submitJobAWSS3()|[api/jobs](https://models.modzy.com/docs/jobs/job-inputs/submit-job)|
-|Submit a Job (JDBC)|modzyClient.submitJobJDBC()|[api/jobs](https://models.modzy.com/docs/jobs/job-inputs/submit-job)|
-|Cancel job|modzyClient.cancelJob()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/cancel-pending-job)  |
-|Hold until inference is complete|modzyClient.blockUntilComplete()|[api/jobs](https://models.modzy.com/docs/jobs/retrieve-job-details)  |
-|Get Job details|modzyClient.getJob()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/retrieve-job-details)  |
-|Retrieve results|modzyClient.getResults()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/results/retrieve-results)  |
-|Retrieve Job History|modzyClient.getJobHistory()|[api/jobs/history](https://models.modzy.com/docs/jobs/job-history/retrieve-job-history)  |
+|Get all models|modzyClient.getAllModels()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-all-models-versions)|
+|List models|modzyClient.getModels()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
+|Get model details|modzyClient.getModel()|[api/models/:model-id](https://models.modzy.com/docs/marketplace/models/retrieve-model-details)|
+|List models by name|modzyClient.getModelByName()|[api/models](https://models.modzy.com/docs/marketplace/models/retrieve-models)|
+|List models by tag|modzyClient.getAllTags()|[api/models/tags](https://models.modzy.com/docs/marketplace/tags/retrieve-models-by-tags)|
+|Get related models|modzyClient.getRelatedModels()|[api/models/:model-id/related-models](https://models.modzy.com/docs/marketplace/models/retrieve-related-models)|
+|Get a model's versions|modzyClient.getModelClient().getModelVersions()|[api/models/:model-id/versions](https://models.modzy.com/docs/marketplace/versions/retrieve-versions)|
+|Get version details|modzyClient.getModelVersion()|[api/models/:model-id/versions/:version-id](https://models.modzy.com/docs/marketplace/versions/retrieve-version-details)|
+|List tags|modzyClient.getAllTags()|[api/models/tags](https://models.modzy.com/docs/marketplace/tags/retrieve-tags)|
+|Submit a Job (Text)|modzyClient.submitJobText()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-text)|
+|Submit a Job (Embedded)|modzyClient.submitJobEmbedded()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-embedded)|
+|Submit a Job (AWS S3)|modzyClient.submitJobAWSS3()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-aws)|
+|Submit a Job (JDBC)|modzyClient.submitJobJDBC()|[api/jobs](https://models.modzy.com/docs/jobs/jobs/submit-job-jdbc)|
+|Cancel a job|modzyClient.cancelJob()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/jobs/cancel-pending-job)  |
+|Hold until inference is complete|modzyClient.blockUntilComplete()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/job-history/retrieve-job-history-details)  |
+|Get job details|modzyClient.getJob()|[api/jobs/:job-id](https://models.modzy.com/docs/jobs/job-history/retrieve-job-history-details)  |
+|Get results|modzyClient.getResults()|[api/results/:job-id](https://models.modzy.com/docs/jobs/results/retrieve-results)  |
+|Get the job history|modzyClient.getJobHistory()|[api/jobs/history](https://models.modzy.com/docs/jobs/job-history/retrieve-job-history)  |
 
 ## Samples
 
