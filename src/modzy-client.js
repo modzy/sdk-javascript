@@ -149,36 +149,36 @@ class ModzyClient {
 	/**
 	 * @see {@link JobClient#submitJobText}
 	 */
-	submitJobText(modelId, versionId, textSources) {
-		return this.jobClient.submitJobText(modelId, versionId, textSources);
+	submitJobText(modelId, versionId, textSources, explain=false) {
+		return this.jobClient.submitJobText(modelId, versionId, textSources, explain);
 	}
 
 	/**
 	 * @see {@link JobClient#submitJobEmbedded}
 	 */
-	submitJobEmbedded(modelId, versionId, mediaType, embeddedSources) {
-		return this.jobClient.submitJobEmbedded(modelId, versionId, mediaType, embeddedSources);
+	submitJobEmbedded(modelId, versionId, mediaType, embeddedSources, explain=false) {
+		return this.jobClient.submitJobEmbedded(modelId, versionId, mediaType, embeddedSources, explain);
 	}
 
 	/**
-	 * @see {@link JobClient#submitJobEmbedded}
+	 * @see {@link JobClient#submitJobFile}
 	 */
-	submitJobFiles(modelId, versionId, fileSources) {
-		return this.jobClient.submitJobFiles(modelId, versionId, fileSources);
+	submitJobFile(modelId, versionId, fileSources, explain=false) {
+		return this.jobClient.submitJobFile(modelId, versionId, fileSources, explain);
 	}
 
 	/**
 	 * @see {@link JobClient#submitJobAWSS3}
 	 */
-	submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources) {
-		return this.jobClient.submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources);
+	submitJobAWSS3(modelId, versionId, accessKeyId, secretAccessKey, region, awss3Sources, explain=false) {
+		return this.jobClient.submitJobAWSS3(modelId, versionId, accessKeyId, secretAccessKey, region, awss3Sources, explain);
 	}
 
 	/**
 	 * @see {@link JobClient#submitJobJDBC}
 	 */
-	submitJobJDBC(modelId, versionId, url, username, password, driver, query) {
-		return this.jobClient.submitJobJDBC(modelId, versionId, url, username, password, driver, query);
+	submitJobJDBC(modelId, versionId, url, username, password, driver, query, explain=false) {
+		return this.jobClient.submitJobJDBC(modelId, versionId, url, username, password, driver, query, explain);
 	}
 
 	/**
