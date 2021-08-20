@@ -1,0 +1,81 @@
+
+
+
+=== These samples show how to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
+
+
+This sample submits a job with an embedded image:
+
+[source, js]
+----
+let job = await modzyClient.submitJobEmbedded(
+                  "ed542963de",
+                  "0.0.27",
+                  "application/octet-stream",
+                  {
+                      "provide-any-name": {"model-input-name": "data:image/jpeg;base64,/.../2Q=="}
+                  }
+              );
+----
+
+This sample submits a job with a text file hosted in a `aws-s3` bucket:
+
+[source, js]
+----
+let job = await modzyClient.submitJobAWSS3(
+                  "ed542963de",
+                  "0.0.27",
+                  "accessKeyID",
+                  "secretAccessKey",
+                  "us-east-1",
+                  {
+                    "provide-any-name": {
+                      "model-input-name": {
+                          "bucket": "bucket-name",
+                          "key": "input_folder/happy.txt"
+                      }
+                    }
+                  }
+              );
+----
+
+This sample submits a job with a all the files located in a `aws-s3` bucket directory:
+
+[source, js]
+----
+//update
+let job = await modzyClient.submitJobAWSS3(
+                  "ed542963de",
+                  "0.0.27",
+                  "accessKeyID",
+                  "secretAccessKey",
+                  "us-east-1",
+                  {
+                     "provide-any-name": {
+                          "model-input-name": {
+                              "bucket": "bucket-name",
+                              "key": "image_input_folder"
+                          }
+                      }
+                  }
+              );
+----
+
+This sample submits a job with data located in a `jdbc` database:
+
+[source, js]
+----
+//update
+let job = await modzyClient.submitJobJDBC(
+                  "ed542963de",
+                  "0.0.27",
+                  {
+                      "type": "jdbc",
+                      "url": "jdbc:sql://database-server.runajob.com:5432/db",
+                      "username": "user",
+                      "password": "password",
+                      "driver": "org.postgresql.Driver",
+                      "query":"select description as \"model-input-name\" from models.model"
+                  }
+                );
+----

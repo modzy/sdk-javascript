@@ -115,9 +115,26 @@ test(
                 }
             )
             .then(
-                (jobIdentifier)=>{
-                    logger.debug(`testCancelJob :: canceling job :: ${jobIdentifier}`);
-                    return jobClient.cancelJob(jobIdentifier);
+                (jobIdentifier) => { 
+                    return new Promise(
+                        (resolve, reject) => {                            
+                            setTimeout(
+                                () => {                                    
+                                    resolve(jobClient.getJob(jobIdentifier));
+                                },
+                                5000
+                            );
+                        }
+                    );
+                }
+            )
+            .then(
+                (job)=>{
+                    if( job.status != "COMPLETED" ){
+                        logger.debug(`testCancelJob :: canceling job :: ${job.jobIdentifier}`);
+                        return jobClient.cancelJob(job.jobIdentifier);
+                    }                    
+                    return job;
                 }
             )
             .then(

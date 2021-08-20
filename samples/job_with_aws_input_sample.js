@@ -74,7 +74,7 @@ async function createJobWithAWSInput() {
         // process and you can identify and refer to a specific input by the key assigned. For example we can add:
         sources["second-key"] = { "image": { 'bucket': BUCKET_NAME, 'key': FILE_KEY } };
         sources["another-key"] = { "image": { 'bucket': BUCKET_NAME, 'key': FILE_KEY } };
-        // If you send a wrong input key, the model fails to process the input.
+        // If you send an incorrect input key, the model fails to process the input.
         sources["wrong-key"] = { "a.wrong.key": { 'bucket': BUCKET_NAME, 'key': FILE_KEY } };
         // If you send a correct input key, but a wrong AWS S3 value key, the model fails to process the input.
         sources["wrong-value"] = { "image": { 'bucket': BUCKET_NAME, 'key': "wrong-aws-file-key.png" } };

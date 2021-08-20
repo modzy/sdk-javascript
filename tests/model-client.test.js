@@ -153,3 +153,55 @@ test(
             );
     }
 );
+
+test(
+    'testGetModelVersion',
+    async () => {        
+        await modelClient.getModelVersion('c60c8dbd79', '0.0.1')
+            .then(
+                (version) => {
+                    expect(version).toBeDefined();                    
+                    logger.info( `testGetModelVersion() get ${version.version} models` );                    
+                }
+            )
+            .catch(
+                (error)=>{
+                    logger.error("Error: "+error);
+                }
+            );
+    }
+);
+
+test(
+    'testGetModelVersionInputSample',
+    async () => {        
+        await modelClient.getModelVersionInputSample('c60c8dbd79', '0.0.1')
+            .then(
+                (inputSample) => {
+                    expect(inputSample).toBeDefined();                    
+                }
+            )
+            .catch(
+                (error)=>{
+                    logger.error("Error: "+error);
+                }
+            );
+    }
+);
+
+test(
+    'testGetModelVersionOutputSample',
+    async () => {        
+        await modelClient.getModelVersionOutputSample('c60c8dbd79', '0.0.1')
+            .then(
+                (outputSample) => {
+                    expect(outputSample).toBeDefined();                    
+                }
+            )
+            .catch(
+                (error)=>{
+                    logger.error("Error: "+error);
+                }
+            );
+    }
+);

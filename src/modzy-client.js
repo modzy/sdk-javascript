@@ -1,10 +1,11 @@
 const logger = require('log4js').getLogger("modzy");
 
 
-import ModelClient from './model-client.js';
-import TagClient from './tag-client.js';
-import JobClient from './job-client.js';
-import ResultClient from './result-client.js';
+const ModelClient = require('./model-client.js');
+const TagClient = require('./tag-client.js');
+const JobClient = require('./job-client.js');
+const AccountingClient = require('./accounting-client.js');
+const ResultClient = require('./result-client.js');
 
 /**
  * Facade class that mask all the interactions with Modzy API
@@ -31,6 +32,7 @@ class ModzyClient {
 		this.tagClient = new TagClient(baseURL, apiKey);
 		this.jobClient = new JobClient(baseURL, apiKey);
 		this.resultClient = new ResultClient(baseURL, apiKey);
+		this.accountingClient = new AccountingClient(baseURL, apiKey);
 	}
 
     /**
@@ -70,6 +72,15 @@ class ModzyClient {
 	 */
 	getResultClient() {
 		return this.resultClient;
+	}
+
+	/**
+	 * Get the accounting client initialized
+	 * @see {@link AccountingClient}
+	 * @returns {AccountingClient}
+	 */
+	getAccountingClient(){
+		return this.accountingClient;
 	}
 
 	/**     	
@@ -136,174 +147,45 @@ class ModzyClient {
 	}
 
 	/**
-	 * 
-	 * Create a new job for the model at the specific version with the text inputs provided.
-	 * 
-	 * @param {string} modelId - the model id string
-	 * @param {versionId} versionId - version id string
-	 * @param {Object[]} textSources - The source(s) of the model 
-	 * @return {Object} the updated instance of the Job returned by Modzy API
-	 * @throws {ApiError} If there is something wrong with the service or the call
+	 * @see {@link JobClient#submitJobText}
 	 */
 	submitJobText(modelId, versionId, textSources) {
-		return this.jobClient.submitJob(
-			{
-				"model": {
-					"identifier": modelId,
-					"version": versionId
-				},
-				"input": {
-					"type": "text",
-					"sources": textSources
-				}
-			}
-		);
-	}
-
-    /**
-	 * 
-	 * Create a new job for the model at the specific version with the embedded inputs provided.
-	 * 
-	 * @param {string} modelId - the model id string
-	 * @param {string} versionId - version id string
-	 * @param {string} mediaType - the media type of the embedded source
-	 * @param {Object[]} embeddedSources the source(s) of the model 
-	 * @return {Object} the updated instance of the Job returned by Modzy API
-	 * @throws {ApiError} if there is something wrong with the service or the call
-	 */
-	submitJobEmbedded(modelId, versionId, mediaType, embeddedSources) {
-		let encodedSources = {};
-		Object.keys(embeddedSources).forEach(
-			sourceKey => {
-				let source = {};
-				Object.keys(embeddedSources[sourceKey]).forEach(
-					key => {
-						source[key] =
-							"data:" + mediaType +
-							";base64," +
-							Buffer.from(embeddedSources[sourceKey][key], 'binary').toString('base64');
-						logger.debug("source[" + sourceKey + "][" + key + "] :: " + source[key]);
-					}
-				);
-				encodedSources[sourceKey] = source;
-			}
-		);
-		return this.jobClient.submitJob(
-			{
-				"model": {
-					"identifier": modelId,
-					"version": versionId
-				},
-				"input": {
-					"type": "embedded",
-					"sources": encodedSources
-				}
-			}
-		);
-	}
-
-    /**
-	 * 
-	 * Create a new job for the model at the specific version with the aws-s3 inputs provided.
-	 * 
-	 * @param {string} modelId - the model id string
-	 * @param {string} versionId - version id string
-     * @param {string} accessKeyID - access key of aws-s3
-     * @param {string} secretAccessKey - secret access key of aws-s3
-     * @param {string} region - aws-s3 region
-	 * @param {Object[]} awss3Sources - the source(s) of the model 
-	 * @return {Object} the updated instance of the Job returned by Modzy API
-	 * @throws {ApiError} if there is something wrong with the service or the call
-	 */
-	submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources) {
-		return this.jobClient.submitJob(
-			{
-				"model": {
-					"identifier": modelId,
-					"version": versionId
-				},
-				"input": {
-					"type": "aws-s3",
-					"accessKeyID": accessKeyID,
-					"secretAccessKey": secretAccessKey,
-					"region": region,
-					"sources": awss3Sources
-				}
-			}
-		);
+		return this.jobClient.submitJobText(modelId, versionId, textSources);
 	}
 
 	/**
-	 * 
-	 * Create a new job for the model at the specific version with the jdbc query provided,
-	 * 
-	 * Modzy will create a data source with the parameters provided and will execute 
-	 * the query provided, then will match the inputs defined of the model with the columns 
-	 * of the resultset.
-	 * 
-	 * @param {string} modelId - the model id string
-	 * @param {string} versionId - version id string
-     * @param {string} url - connection url to the database
-     * @param {string} username - database username
-     * @param {string} password - database password
-	 * @param {string} driver - fully qualified name of the driver class for jdbc
-	 * @param {string} query - the query to get the inputs of the model
-	 * @return {Object} the updated instance of the Job returned by Modzy API
-	 * @throws {ApiError} if there is something wrong with the service or the call
+	 * @see {@link JobClient#submitJobEmbedded}
 	 */
-	submitJobJDBC(modelId, versionId, url, username, password, driver, query) {
-		return this.jobClient.submitJob(
-			{
-				"model": {
-					"identifier": modelId,
-					"version": versionId
-				},
-				"input": {
-					"type": "jdbc",
-					"url": url,
-					"username": username,
-					"password": password,
-					"driver": driver,
-					"query": query
-				}
-			}
-		);
+	submitJobEmbedded(modelId, versionId, mediaType, embeddedSources) {
+		return this.jobClient.submitJobEmbedded(modelId, versionId, mediaType, embeddedSources);
 	}
 
-    /**
-	 * 
-	 * Utility method that wait until the job finish.
-	 * 
-	 * This method first check the status of the job and wait until the job reach
-	 * the completed/error status by passing through  the submitted and in_progress state.
-	 * 
-	 * @param {Object} job The job to block	 
-	 * @return {Object} A updated instance of the job in a final state
-	 * @throws {ApiError} if there is something wrong with the service or the call
+	/**
+	 * @see {@link JobClient#submitJobEmbedded}
+	 */
+	submitJobFiles(modelId, versionId, fileSources) {
+		return this.jobClient.submitJobFiles(modelId, versionId, fileSources);
+	}
+
+	/**
+	 * @see {@link JobClient#submitJobAWSS3}
+	 */
+	submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources) {
+		return this.jobClient.submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources);
+	}
+
+	/**
+	 * @see {@link JobClient#submitJobJDBC}
+	 */
+	submitJobJDBC(modelId, versionId, url, username, password, driver, query) {
+		return this.jobClient.submitJobJDBC(modelId, versionId, url, username, password, driver, query);
+	}
+
+	/**
+	 * @see {@link JobClient#blockUntilComplete}
 	 */
 	blockUntilComplete(job) {
-		logger.debug(`blockUntilComplete(${job.jobIdentifier}}) :: ${job.status}`);
-		return this.jobClient.getJob(job.jobIdentifier)
-			.then(
-				(updatedJob) => {
-					if (updatedJob.status === "SUBMITTED" || updatedJob.status === "IN_PROGRESS") {
-						return new Promise(
-							(resolve, reject) => {
-								setTimeout(
-									() => {
-										resolve(
-											this.blockUntilComplete(updatedJob)
-										);
-									},
-									20000
-								);
-							}
-						);
-					}
-					logger.debug(`blockUntilComplete(${updatedJob.jobIdentifier}}) :: returning :: ${updatedJob.status}`);
-					return updatedJob;
-				}
-			)
+		return this.jobClient.blockUntilComplete(job);
 	}
 
    /**

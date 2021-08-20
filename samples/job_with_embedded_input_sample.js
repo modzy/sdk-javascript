@@ -22,10 +22,12 @@ const modzyClient = new modzy.ModzyClient(BASE_URL, API_KEY);
 
 // Create a Job with an embedded input, wait, and retrieve results:
 
+
 async function createJobWithEmbeddedInput() {
     try {
         // Get the model object:
         // If you already know the model identifier (i.e.: you got it from the URL of the model details page or the input sample),
+
         // you can skip this step. If you don't, you can find the model identifier by using its name as follows:
         let model = await modzyClient.getModelByName("Multi-Language OCR");
         // Or if you already know the model id and want to know more about the model, you can use this instead:
@@ -37,7 +39,9 @@ async function createJobWithEmbeddedInput() {
         logger.info(`The model identifier is ${model.modelId} and the latest version is ${model.latestVersion}`);
 
         // Get the model version object:
+
         // If you already know the model version and the input key(s) of the model version, you can skip this step. Also, you can
+
         // use the following code block to know about the input keys and skip the call on future job submissions.
         let modelVersion = await modzyClient.getModelVersion(model.modelId, model.latestVersion);
         // The info stored in modelVersion provides insights about the amount of time that the model can spend processing, the input, and
@@ -54,6 +58,7 @@ async function createJobWithEmbeddedInput() {
             let output = modelVersion.outputs[key];
             logger.info(`    key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
         }
+
 
         // Send the job:
         // An embedded input is a byte array encoded as a string in Base64. This input type comes very handy for small to middle size files. However,
@@ -75,6 +80,7 @@ async function createJobWithEmbeddedInput() {
         sources["wrong-value"] = { "input": configBytes, "config.json": imageBytes }
         // When you have all your inputs ready, you can use our helper method to submit the job as follows:        
         let job = await modzyClient.submitJobEmbedded(model.modelId, modelVersion.version, "application/octet-stream", sources);
+
         // Modzy creates the job and queue for processing. The job object contains all the info that you need to keep track
         // of the process, the most important being the job identifier and the job status.
         logger.info("job: " + job.jobIdentifier + " " + job.status);

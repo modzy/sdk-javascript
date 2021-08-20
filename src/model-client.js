@@ -1,7 +1,8 @@
 const axios  = require('axios').default;
 const logger = require('log4js').getLogger("modzy.model-client");
 
-import ApiError from './api-error.js';
+const ApiError = require('./api-error.js');
+const stringSimilarity = require("string-similarity");
 
 /**
  * Utility class that mask the interaction with the model api
@@ -198,14 +199,33 @@ class ModelClient{
     getModelByName(name){
         return this.getModels(
           null, null, null, name,
-            null, null, null, null, null, null,
-            null, null, null, null
+            null, true, null, null, null, null,
+            null, 20, null, "name"
         )
             .then(
                     (models) => {
                         logger.debug(`getModelByName(${name}) models ${models.length}`);
                         if( models !== null && models.length > 0 ){
-                            logger.debug(`getModelByName(${name}) model ${models[0].modelId}`);
+                            if( models.length > 1 ){
+                                return Promise.all(
+                                    models.map( model => this.getModel(model.modelId))
+                                ).then(
+                                    models2 => {
+                                        models2 = models2.map(
+                                            model => {
+                                                model.distance = stringSimilarity.compareTwoStrings(name, model.name);
+                                                return model;
+                                            }
+                                        ).sort(
+                                            (a,b) => a.distance - b.distance
+                                        );
+                                        models2.forEach(model=>logger.debug(`${model.modelId} ${model.name} ${model.distance}`));
+                                        logger.debug(`getModelByName(${name}) model ${models2[models2.length-1].modelId} :: ${models2[models2.length-1].name}`);
+                                        return models2[models2.length-1];
+                                    }
+                                );
+                            }
+                            logger.debug(`getModelByName(${name}) model ${models[0].modelId} `);
                             return this.getModel(models[0].modelId);
                         }
                         else{
@@ -278,7 +298,7 @@ class ModelClient{
 
     /**
 	 * 
-	 * Call the Modzy API Service that return a version list related to a model identifier
+	 * Call the Modzy API Service that return a model version
 	 * 
 	 * @param {string} modelId - Identifier of the model
      * @param {string} versionId - Identifier of the version
@@ -295,6 +315,64 @@ class ModelClient{
         .then(
             ( response )=>{
                 logger.info(`getModelVersion(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
+                return response.data;
+            }
+        )
+        .catch(
+            ( error )=>{                
+                throw( new ApiError( error ) );
+            }
+        );
+    }
+
+    /**
+	 * 
+	 * Call the Modzy API Service that return the model version input sample
+	 * 
+	 * @param {string} modelId - Identifier of the model
+     * @param {string} versionId - Identifier of the version
+	 * @return {String} A json string with the input sample
+	 * @throws {ApiError} Error if there is something wrong with the service or the call
+	 */
+    getModelVersionInputSample(modelId, versionId){
+        const requestURL = `${this.baseURL}/${modelId}/versions/${versionId}/sample-input`;
+        logger.debug(`getModelVersionInputSample(${modelId}, ${versionId}) GET ${requestURL}`);
+        return axios.get(
+            requestURL,
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+        .then(
+            ( response )=>{
+                logger.info(`getModelVersionInputSample(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
+                return response.data;
+            }
+        )
+        .catch(
+            ( error )=>{                
+                throw( new ApiError( error ) );
+            }
+        );
+    }
+
+    /**
+	 * 
+	 * Call the Modzy API Service that return the model version output sample
+	 * 
+	 * @param {string} modelId - Identifier of the model
+     * @param {string} versionId - Identifier of the version
+	 * @return {String} A json string with the output sample
+	 * @throws {ApiError} Error if there is something wrong with the service or the call
+	 */
+    getModelVersionOutputSample(modelId, versionId){
+        const requestURL = `${this.baseURL}/${modelId}/versions/${versionId}/sample-output`;
+        logger.debug(`getModelVersionOutputSample(${modelId}, ${versionId}) GET ${requestURL}`);
+        return axios.get(
+            requestURL,
+            {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+        )
+        .then(
+            ( response )=>{
+                logger.info(`getModelVersionOutputSample(${modelId}, ${versionId}) :: ${response.status} ${response.statusText}`);
                 return response.data;
             }
         )
