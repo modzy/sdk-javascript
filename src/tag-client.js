@@ -30,7 +30,7 @@ class TagClient{
         logger.debug(`getAllTags() GET ${this.baseURL}`);
         return axios.get(
                 this.baseURL, 
-                //{headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+                {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
             )
             .then(
                 ( response )=>{
@@ -58,7 +58,7 @@ class TagClient{
         logger.debug(`getTagsAndModels(${tagsId}) GET ${requestURL}`);
         return axios.get(
             requestURL, 
-                //{headers: {'Authorization':`ApiKey ${this.apiKey}`}}
+                {headers: {'Authorization':`ApiKey ${this.apiKey}`}}
             )
             .then(
                 ( response )=>{
