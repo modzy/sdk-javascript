@@ -123,16 +123,18 @@ class JobClient{
      * @param {string} modelId - the model id string
      * @param {versionId} versionId - version id string
      * @param {Object[]} textSources - The source(s) of the model
+     * @param {boolean} explain - Explainability flag
      * @return {Object} the updated instance of the Job returned by Modzy API
      * @throws {ApiError} If there is something wrong with the service or the call
      */
-    submitJobText(modelId, versionId, textSources) {
+    submitJobText(modelId, versionId, textSources, explain=false) { 
         return this.submitJob(
             {
                 "model": {
                     "identifier": modelId,
                     "version": versionId
                 },
+                "explain": explain,
                 "input": {
                     "type": "text",
                     "sources": textSources
@@ -148,10 +150,11 @@ class JobClient{
      * @param {string} modelId - the model id string
      * @param {string} versionId - version id string
      * @param {Object[]} fileSources the source(s) of the model
+     * @param {boolean} explain - Explainability flag
      * @return {Object} the updated instance of the Job returned by Modzy API
      * @throws {ApiError} if there is something wrong with the service or the call
      */
-    submitJobFiles(modelId, versionId, fileSources) {
+    submitJobFile(modelId, versionId, fileSources, explain=false) {
         let job = {};
         let chunkSize = 1024*1024;
         return this.submitJob(
@@ -159,7 +162,8 @@ class JobClient{
                 "model": {
                     "identifier": modelId,
                     "version": versionId
-                }
+                },
+                "explain": explain
             }
         ).then(
             (openJob)=>{
@@ -211,10 +215,11 @@ class JobClient{
      * @param {string} versionId - version id string
      * @param {string} mediaType - the media type of the embedded source
      * @param {Object[]} embeddedSources the source(s) of the model
+     * @param {boolean} explain - Explainability flag
      * @return {Object} the updated instance of the Job returned by Modzy API
      * @throws {ApiError} if there is something wrong with the service or the call
      */
-    submitJobEmbedded(modelId, versionId, mediaType, embeddedSources) {
+    submitJobEmbedded(modelId, versionId, mediaType, embeddedSources, explain=false) {
         let encodedSources = {};
         Object.keys(embeddedSources).forEach(
             sourceKey => {
@@ -237,6 +242,7 @@ class JobClient{
                     "identifier": modelId,
                     "version": versionId
                 },
+                "explain": explain,
                 "input": {
                     "type": "embedded",
                     "sources": encodedSources
@@ -251,20 +257,22 @@ class JobClient{
      *
      * @param {string} modelId - the model id string
      * @param {string} versionId - version id string
-     * @param {string} accessKeyID - access key of aws-s3
+     * @param {string} accessKeyId - access key of aws-s3
      * @param {string} secretAccessKey - secret access key of aws-s3
      * @param {string} region - aws-s3 region
      * @param {Object[]} awss3Sources - the source(s) of the model
+     * @param {boolean} explain - Explainability flag
      * @return {Object} the updated instance of the Job returned by Modzy API
      * @throws {ApiError} if there is something wrong with the service or the call
      */
-    submitJobAWSS3(modelId, versionId, accessKeyID, secretAccessKey, region, awss3Sources) {
+    submitJobAWSS3(modelId, versionId, accessKeyId, secretAccessKey, region, awss3Sources, explain=false) {
         return this.submitJob(
             {
                 "model": {
                     "identifier": modelId,
                     "version": versionId
                 },
+                "explain": explain,
                 "input": {
                     "type": "aws-s3",
                     "accessKeyID": accessKeyID,
@@ -291,16 +299,18 @@ class JobClient{
      * @param {string} password - database password
      * @param {string} driver - fully qualified name of the driver class for jdbc
      * @param {string} query - the query to get the inputs of the model
+     * @param {boolean} explain - Explainability flag
      * @return {Object} the updated instance of the Job returned by Modzy API
      * @throws {ApiError} if there is something wrong with the service or the call
      */
-    submitJobJDBC(modelId, versionId, url, username, password, driver, query) {
+    submitJobJDBC(modelId, versionId, url, username, password, driver, query, explain=false) {
         return this.submitJob(
             {
                 "model": {
                     "identifier": modelId,
                     "version": versionId
                 },
+                "explain": explain,
                 "input": {
                     "type": "jdbc",
                     "url": url,

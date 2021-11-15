@@ -71,7 +71,7 @@ async function createJobWithFileInput(){
 		// If you send a correct input key, but some wrong values, the model fails to process the input.
 		sources["wrong-value"] = {"input": configPath, "config.json":imagePath}
 		// When you have all your inputs ready, you can use our helper method to submit the job as follows:        
-        let job = await modzyClient.submitJobFiles(model.modelId,modelVersion.version, sources);
+        let job = await modzyClient.submitJobFile(model.modelId,modelVersion.version, sources);
         // Modzy creates the job and queue for processing. The job object contains all the info that you need to keep track
         // of the process, the most important being the job identifier and the job status.
         logger.info("job: "+job.jobIdentifier+" "+job.status);
