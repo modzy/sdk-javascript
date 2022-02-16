@@ -1,262 +1,227 @@
-# Modzy Javascript SDK
+# Modzy JavaScript SDK
 
-![Modzy Logo](https://www.modzy.com/wp-content/uploads/2020/06/MODZY-RGB-POS.png)
+Modzy's Javascript SDK simplifies tasks such as querying models, submitting jobs, and returning results. It supports both NodeJS and browser JavaScript applications using the output target of your build system to know which code to use.
 
-<div align="center">
+## Visit [docs.modzy.com](https://docs.modzy.com/docs/javascript) for docs, guides, API and more.
 
-**Modzy's Javascript SDK queries models, submits inference jobs, and returns results directly to your editor.**
+These instructions are for Modzy JavaScript SDK v2, which is substantially different from v1.
 
-
-![GitHub contributors](https://img.shields.io/github/contributors/modzy/sdk-javascript)
-![GitHub last commit](https://img.shields.io/github/last-commit/modzy/sdk-javascript)
-![GitHub Release Date](https://img.shields.io/github/issues-raw/modzy/sdk-javascript)
-
-
-[The job lifecycle](https://docs.modzy.com/reference/the-job-lifecycle) | [API Keys](https://docs.modzy.com/reference/api-keys-1) | [Samples](https://github.com/modzy/sdk-javascript/tree/main/samples) | [Documentation](https://docs.modzy.com/docs)
-
-</div>
+---
 
 ## Installation
 
-[![installation](https://github.com/modzy/sdk-javascript/raw/main/install.gif)](https://asciinema.org/a/B1IkRkW4LjW7sufkjoMWoETH6)
+From the command line in your project directory, run `yarn add @modzy/modzy-sdk` or `npm install @modzy/modzy-sdk`.
+Then import the ModzyClient class into your code:
 
-Use [yarn](https://yarnpkg.com/) to package and install the SDK:
+```bash
+yarn add @modzy/modzy-sdk
+# or
+npm install @modzy/modzy-sdk
+```
 
-Globally:
+```javascript
+import { ModzyClient } from "@modzy/modzy-sdk";
+```
 
-- `$ yarn global add @modzy/modzy-sdk`
-
-In an existing project:
-
-- `$ yarn add @modzy/modzy-sdk`
-
-Or you can use [npm](https://nodejs.org/):
-
-Globally
-
-- `$ npm install -g @modzy/modzy-sdk`
-
-In an existing project:
-
-- `$ npm install @modzy/modzy-sdk`
-
-You can also install from Github:
-
-- `$ npm install modzy/sdk-javascript`
-
-## Get your API key
-
-Once you have a `model` and `version` identified, get authenticated with your API key.
-
-API keys are security credentials required to perform API requests to Modzy. Our API keys are composed of an ID that is split by a dot into two parts: a public and private part.
-
-The *public* part is the API keys' visible part only used to identify the key and by itself, it’s unable to perform API requests.
-
-The *private* part is the public part's complement and it’s required to perform API requests. Since it’s not stored on Modzy’s servers, it cannot be recovered. Make sure to save it securely. If lost, you can [replace the API key](https://docs.modzy.com/reference/update-a-keys-body).
-
-
-Find your API key in your user profile. To get your full API key click on "Get key":
-
-<img src="key.png" alt="get key" width="10%"/>
+---
 
 ## Initialize
 
-Get authenticated with your API key:
+To initialize the modzy client you need an [api key](https://docs.modzy.com/docs/getting-started#key-download-your-api-key). If using an installation of Modzy other than app.modzy.com, you'll also need the url for your instance of Modzy.
 
 ```javascript
-const modzy = require('modzy-sdk');
-const modzyClient = new modzy.ModzyClient("http://url.to.modzy/api", "API Key");
+// app.modzy.com
+const modzyClient = new ModzyClient({
+  apiKey: "xxxxxxxxxxxxx.xxxxxxxxxxxxx",
+});
+
+// or for private Modzy instances
+const modzyClient = new ModzyClient({
+  apiKey: "xxxxxxxxxxxxx.xxxxxxxxxxxxx",
+  url: "https://modzy.yourdomain.com/api
+});
 ```
 
-## Basic usage
+⚠️ _Warning: Keep your API key secret. Do not include it in git repo or store it on GitHub_
 
-![Basic Usage](https://github.com/modzy/sdk-javascript/raw/main/js.gif)
+---
 
-### Browse models
+## Submit a job
 
-Modzy’s Marketplace includes pre-trained and re-trainable AI models from industry-leading machine learning companies, accelerating the process from data to value.
+The ModzyClient has several methods for creating jobs based on the input type:
 
-The Model service drives the Marketplace and can be integrated with other applications, scripts, and systems. It provides routes to list, search, and filter model and model-version details.
+- `submitJobText()`: For text inputs
+- `submitJobFile()`: For binaries
+- `submitJobEmbedded()`: For Base64 strings
+- `submitJobAwsS3()`: For inputs stored in S3
+- `submitJobJDBC()`: For inputs stored in databases
 
-[List models](https://docs.modzy.com/reference/list-models)
+The return of each of these methods is a promise that resolves to an object describing the submitted job, _not the job result!_
+The most important item in the job object is the `jobIdentifier` - you'll use this to check the status of the job and get the job results.
 
 ```javascript
-const models = await modzyClient.getAllModels();
-models.forEach(
-    model => {
-        console.log(JSON.stringify(model));
-    }
+const { jobIdentifier } = await modzyClient.submitJobText({
+  modelId: "ed542963de",
+  version: "1.0.1",
+  sources: {
+    yourInputKey: {
+      "input.txt": "Sometimes I really hate ribs",
+    },
+  },
+});
+```
+
+In the sources object above, the key `"yourInputKey"` is named by you and can be anything, but "input.txt" is the required input name set by this particular model. You can find the input name(s) by going to model details > API for the model you want to use.
+
+Your can submit multiple input sets in a single job rather than submitting multiple jobs with a single input set. An example using the same model as above:
+
+```javascript
+const { jobIdentifier } = await modzyClient.submitJobText({
+  modelId: "ed542963de",
+  version: "1.0.1",
+  sources: {
+    myFirstInput: {
+      "input.txt": "Rain is the worst weather",
+    },
+    mySecondInput: {
+      "input.txt": "Partly cloudy is the best weather",
+    },
+  },
+});
+```
+
+Some models require 2 or more inputs to run. In that case, the sources object would look something like this:
+
+```javascript
+{
+  yourInputKey: {
+    "inputA": // ...contents of inputA,
+    "inputB": // ...contents of inputB,
+  },
+};
+```
+
+[Learn more about creating jobs.](https://docs.modzy.com/reference/create-a-job-1)
+
+---
+
+## Wait for the job to complete
+
+Before you can get your job's result, you first have to wait for the job to finish. How long will that take? Well ... it's complicated. A job might finish in a few milliseconds, or it may take several minutes to finish running. How long depends on a numbers of factors such as model type, job queue length, how many processing engines are running, and the hardware being used.
+
+The JavaScript SDK has the method `blockUntilJobComplete()` to simplify waiting:
+
+```javascript
+await modzyClient.blockUntilJobComplete(jobIdentifier);
+```
+
+As the name implies, this will block any subsequent code from running until the job is complete. It does this by creating a loop that checks the job status every two seconds until the job status comes back as finish. You can change the interval by passing in a new timeout value in milliseconds:
+
+```javascript
+await modzyClient.blockUntilJobComplete(jobIdentifier, { timeout: 500 });
+```
+
+If you'd rather check the status of the job yourself, you can use `getJob()`
+
+```javascript
+const { status } = await modzyClient.getJob(jobIdentifier);
+
+// status of "SUBMITTED" or "IN_PROGRESS" means the job hasn't finished
+// "COMPLETED", "COMPLETED_WITH_ERROR" or "TIMEDOUT" indicates the job has finished
+```
+
+---
+
+## Get job results
+
+Once the job is done, you can fetch the result using `getResult()`. This returns a large object containing information about the job as well as the results. If the model returns multiple outputs, they will all be included in this single object.
+
+```javascript
+const result = await modzyClient.getResult(jobIdentifier);
+```
+
+---
+
+## Getting a specific result output
+
+You can use `getOutputContents()` to fetch only the contents of a specific model output. This is especially useful if the output is a binary file. You need to know the model's output name(s), which you can get from the model details.
+
+Let's use the Text to Speech model on app.modzy.com as an example:
+
+```javascript
+// This code sample is for the browser, not Node
+
+// Submit the job
+const { jobIdentifier } = await modzyClient.submitJobText({
+  modelId: "uvdncymn6q",
+  version: "0.0.3",
+  sources: {
+    myInput: {
+      "input.txt": "I love the sound of robot voices!",
+    },
+  },
+});
+
+// Wait for the job to finish
+await modzyClient.blockUntilJobComplete(jobIdentifier);
+
+// Get the contents of the output named "results.wav" that the user submitted
+// with the key "myInput".
+// Note that the responseType is "blob" because this model output is a binary file.
+// The default responseType is "json".
+const speechContents = await modzyClient.getOutputContents({
+  jobId: jobIdentifier,
+  inputKey: "myInput",
+  outputName: "results.wav", // The output name must match the model's api!
+  responseType: "blob",
+});
+
+// create a link to download the file from the browser
+const url = window.URL.createObjectURL(
+  new Blob([speechContents], { type: "audio/wav" })
 );
+const link = document.createElement("a");
+link.href = url;
+link.setAttribute("download", "results.wav");
+document.body.appendChild(link);
+link.click();
+link.remove();
 ```
 
-Tags help categorize and filter models. They make model browsing easier.
-
-[List tags](https://docs.modzy.com/reference/list-tags):
+If you're writing a Node app, set the `responseType` to `"arraybuffer"`.
 
 ```javascript
-const tags = await modzyClient.getAllTags();
-tags.forEach(
-    tag => {
-        console.log(JSON.stringify(tag));
-    }
-);
+// Node JS
+
+// Get the contents of the output named "results.wav" that the user submitted
+// with the key `myInput`.
+const speechContents = await modzyClient.getOutputContents({
+  jobId: speechJob.jobIdentifier,
+  inputKey: "myInput",
+  outputName: "results.wav",
+  responseType: "arraybuffer",
+});
+
+// write the file to disk
+fs.writeFileSync("./results.wav", speechContents);
 ```
 
-[List models by tag](https://docs.modzy.com/reference/list-models-by-tag):
-
-```javascript
-const tagsModels = await modzyClient.getTagsAndModels("language_and_text");
-tagsModels.models.forEach(
-    model => {
-        console.log(JSON.stringify(model));
-    }
-);
-```
-
-### Get a model's details
-
-Models accept specific *input file [MIME](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) types*. Some models may require multiple input file types to run data accordingly. In this sample, we use a model that requires `text/plain`.
-
-Models require inputs to have a specific *input name* declared in the job request. This name can be found in the model’s details. In this sample, we use a model that requires `input.txt`.
-
-Additionally, users can set their own input names. When multiple input items are processed in a job, these names are helpful to identify and get each input’s results. In this sample, we use a model that requires `input-1` and `input-2`.
-
-[Get a model's details](https://docs.modzy.com/reference/list-model-details):
-
-```javascript
-const saModel = await modzyClient.getModel("ed542963de");
-console.log(JSON.stringify(saModel));
-```
-
-Model specific sample requests are available in the version details and in the Model Details page.
-
-[Get version details](https://docs.modzy.com/reference/get-version-details):
-
-```javascript
-let modelVersion = await modzyClient.getModelVersion("ed542963de", "0.0.27");
-console.log("inputs:");
-for(key in modelVersion.inputs){
-    let input = modelVersion.inputs[key];
-    console.log(`  key ${input.name}, type ${input.acceptedMediaTypes}, description: ${input.description}`);
-}
-console.log("outputs:");
-for(key in modelVersion.outputs){
-    let output = modelVersion.outputs[key];
-    console.log(`  key ${output.name}, type ${output.mediaType}, description: ${output.description}`);
-}
-```
-
-### Submit a job and get results
-
-A *job* is the process that sends data to a model, sets the model to run the data, and returns results.
-
-Modzy supports several *input types* such as `text`, `embedded` for Base64 strings, `aws-s3` and `aws-s3-folder` for inputs hosted in buckets, and `jdbc` for inputs stored in databases. In this sample, we use `text`.
-
-[Here](https://github.com/modzy/sdk-javascript/blob/readmeUpdates/samples.adoc) are samples to submit jobs with `embedded`, `aws-s3`, `aws-s3-folder`, and `jdbc` input types.
-
-[Submit a job with the model, version, and input items](https://docs.modzy.com/reference/create-a-job-1):
-
-```javascript
-let job = await modzyClient.submitJobText(
-    "ed542963de",
-    "0.0.27",
-    {
-        'input-1':{'input.txt':'Modzy is great'},
-        'input-2':{'input.txt':'Modzy is great'},
-    }
-);
-```
-
-[Hold until the inference is complete and results become available](https://docs.modzy.com/reference/get-job-details):
-
-```javascript
-job = await modzyClient.blockUntilComplete(job);
-```
-
-[Get the results](https://docs.modzy.com/reference/get-results):
-
-Results are available per input item and can be identified with the name provided for each input item upon job request. You can also add an input name to the route and limit the results to any given input item.
-
-Jobs requested for multiple input items may have partial results available prior to job completion.
-
-```javascript
-let results = await modzyClient.getResult(job.jobIdentifier);
-```
-
-### Fetch errors
-
-Errors may arise for different reasons. Fetch errors to know what is their cause and how to fix them.
-
-Error      | Description
----------- | ---------
-`ApiError` | Wrapper for different errors, check code, message, url attributes.
-
-
-Submitting jobs:
-
-```javascript
-try{
-    let job = await modzyClient.submitJobText("ed542963de","0.0.27",{'input-1':{'input.txt':'Modzy is great'},});
-} catch(error){
-    console.log("the job submission fails with code "+error.code+" and message "+error.message);
-}
-```
-
-## Features
-
-Modzy supports [batch processing](https://docs.modzy.com/reference/batch-processing), [explainability](https://docs.modzy.com/reference/explainability), and [model drift detection](https://docs.modzy.com/reference/model-drift-1).
-
-## APIs
-
-Here is a list of Modzy APIs. To see all the APIs, check our [Documentation](https://docs.modzy.com/reference/introduction).
-
-
-| Feature | Code |Api route
-| ---     | ---  | ---
-|Get all models|modzyClient.getAllModels()|[api/models](https://docs.modzy.com/reference/get-all-models)|
-|List models|modzyClient.getModels()|[api/models](https://docs.modzy.com/reference/list-models)|
-|Get model details|modzyClient.getModel()|[api/models/:model-id](https://docs.modzy.com/reference/list-model-details)|
-|List models by name|modzyClient.getModelByName()|[api/models](https://docs.modzy.com/reference/list-models)|
-|List models by tag|modzyClient.getAllTags()|[api/models/tags](https://docs.modzy.com/reference/list-models-by-tag)|
-|Get related models|modzyClient.getRelatedModels()|[api/models/:model-id/related-models](https://docs.modzy.com/reference/get-related-models)|
-|Get a model's versions|modzyClient.getModelClient().getModelVersions()|[api/models/:model-id/versions](https://docs.modzy.com/reference/list-versions)|
-|Get version details|modzyClient.getModelVersion()|[api/models/:model-id/versions/:version-id](https://docs.modzy.com/reference/get-version-details)|
-|List tags|modzyClient.getAllTags()|[api/models/tags](https://docs.modzy.com/reference/list-tags)|
-|Submit a Job (Text)|modzyClient.submitJobText()|[api/jobs](https://docs.modzy.com/reference/create-a-job-1)|
-|Submit a Job (Embedded)|modzyClient.submitJobEmbedded()|[api/jobs](https://docs.modzy.com/reference/create-a-job-1)|
-|Submit a Job (AWS S3)|modzyClient.submitJobAWSS3()|[api/jobs](https://docs.modzy.com/reference/create-a-job-1)|
-|Submit a Job (JDBC)|modzyClient.submitJobJDBC()|[api/jobs](https://docs.modzy.com/reference/create-a-job-1)|
-|Cancel a job|modzyClient.cancelJob()|[api/jobs/:job-id](https://docs.modzy.com/reference/cancel-a-job)  |
-|Hold until inference is complete|modzyClient.blockUntilComplete()|[api/jobs/:job-id](https://docs.modzy.com/reference/get-job-details)  |
-|Get job details|modzyClient.getJob()|[api/jobs/:job-id](https://docs.modzy.com/reference/get-job-details)  |
-|Get results|modzyClient.getResults()|[api/results/:job-id](https://docs.modzy.com/reference/get-results)  |
-|List the job history|modzyClient.getJobHistory()|[api/jobs/history](https://docs.modzy.com/reference/list-the-job-history)  |
+---
 
 ## Samples
 
 Check out our [samples](https://github.com/modzy/sdk-javascript/tree/main/samples) for details on specific use cases.
+Samples are intended to be run using Node, but most can also run in the browser. The `react examples` directory contains a couple of react components to show how you can use the browser to send files to, or retrieve files from Modzy. To run the samples using app.modzy.com, make sure to update the line `const API_KEY = process.env.MODZY_API_KEY;` to contain a real api key from your account.
 
-To run samples:
+---
 
-Set the base url and api key in each sample file:
-
-```javascript
-// TODO: set the base url of modzy api and you api key
-const modzyClient = new modzy.ModzyClient("http://modzy.url", "modzy-apy.key");
-```
-
-Or follow the instructions [here](https://github.com/modzy/sdk-javascript/tree/main/contributing.adoc#set-environment-variables-in-bash) to learn more.
-
-And then, you can:
-
-```bash
-`$ node samples/job_with_text_input_sample.js`
-```
 ## Contributing
 
 We are happy to receive contributions from all of our users. Check out our [contributing file](https://github.com/modzy/sdk-javascript/tree/main/contributing.adoc) to learn more.
 
+---
+
 ## Code of conduct
 
-
+Please see our [code of conduct](https://github.com/modzy/sdk-javascript/tree/main//CODE_OF_CONDUCT.md) for any questions about the kind of community we are trying to build.
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://github.com/modzy/sdk-javascript/tree/main//CODE_OF_CONDUCT.md)
