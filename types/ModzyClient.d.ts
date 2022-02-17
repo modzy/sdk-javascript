@@ -28,8 +28,8 @@ export declare class ModzyClient {
     getJobClient(): JobClient;
     getJob(jobId: string): Promise<import("./types").GetJobResponse>;
     cancelJob(jobId: string): Promise<any>;
-    getResult(jobId: string): Promise<any>;
-    getOutputContents(params: GetOutputContentsParams): Promise<any>;
+    getResult(jobId: string): Promise<import("./types").GetResultResponse>;
+    getOutputContents(params: GetOutputContentsParams): Promise<unknown>;
     blockUntilJobComplete(jobId: string, options?: {
         timeout?: number;
     }): Promise<import("./types").GetJobResponse>;

@@ -344,4 +344,44 @@ export interface GetJobResponse {
         identifier: string;
     };
 }
+export interface GetResultResponse {
+    jobIdentifier: string;
+    accountIdentifier: string;
+    team: {
+        identifier: string;
+    };
+    total: number;
+    completed: number;
+    failed: number;
+    finished: boolean;
+    submittedByKey: string;
+    explained: boolean;
+    submittedAt: string;
+    initialQueueTime: number;
+    totalQueueTime: number;
+    averageModelLatency: number;
+    totalModelLatency: number;
+    elapsedTime: number;
+    startingResultSummarizing: string;
+    resultSummarizing: number;
+    inputSize: number;
+    results: {
+        job: {
+            status: string;
+            engine: string;
+            inputFetching: number;
+            outputUploading?: any;
+            modelLatency: number;
+            queueTime: number;
+            startTime: string;
+            updateTime: string;
+            endTime: string;
+            [key: string]: any;
+            voting: {
+                up: 0;
+                down: 0;
+            };
+        };
+    };
+}
 export {};

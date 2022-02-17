@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/modzy/sdk-javascript#readme",
   "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
   "browser": {
     "dist/FileJobClient.js": "./dist/FileJobClientBrowser.js",
     "dist/base64Util.js": "./dist/base64UtilBrowser.js",
@@ -50,6 +54,7 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
+    "form-data": "^4.0.0",
     "string-similarity": "^4.0.4"
   }
 }

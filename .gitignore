@@ -68,6 +68,7 @@ typings/
 .yarn/build-state.yml
 
 dist
+types
 docs
 
 # misc

@@ -1,5 +1,5 @@
 import { Logger } from "./Logger";
-import { ClassInitiator, GetJobHistoryParams, JobHistoryResponseItem, SubmitJobParams, SubmitJobTextParams, SubmitJobResponse, GetOutputContentsParams, SubmitJobJDBCParams, SubmitJobAwsS3Params, SubmitJobEmbeddedParams, EnginesResponse, GetJobResponse } from "./types";
+import { ClassInitiator, GetJobHistoryParams, JobHistoryResponseItem, SubmitJobParams, SubmitJobTextParams, SubmitJobResponse, GetOutputContentsParams, SubmitJobJDBCParams, SubmitJobAwsS3Params, SubmitJobEmbeddedParams, EnginesResponse, GetJobResponse, GetResultResponse } from "./types";
 export declare class JobClient {
     logger: Logger;
     readonly baseUrl: string;
@@ -21,8 +21,8 @@ export declare class JobClient {
      * Call the Modzy API Service that return a job instance by it's identifier
      */
     getJob(jobId: string): Promise<GetJobResponse>;
-    getResult(jobId: string): Promise<any>;
-    getOutputContents({ jobId, inputKey, outputName, responseType, }: GetOutputContentsParams): Promise<any>;
+    getResult(jobId: string): Promise<GetResultResponse>;
+    getOutputContents({ jobId, inputKey, outputName, responseType, }: GetOutputContentsParams): Promise<unknown>;
     /**
      * Utility method that waits until the job finishes.
      *
