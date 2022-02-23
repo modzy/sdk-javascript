@@ -13,19 +13,19 @@ export class Logger {
     }
   }
 
-  debug(...message: any) {
+  debug(...message: any[]) {
     if (this.level >= 2) {
       console.log("Modzy > ", ...message);
     }
   }
 
-  info(...message: any) {
+  info(...message: any[]) {
     if (this.level >= 1) {
       console.info("Modzy > ", ...message);
     }
   }
 
-  error(...message: any) {
+  error(...message: any[]) {
     if (this.level >= 1) {
       console.error("Modzy > ", ...message);
     }

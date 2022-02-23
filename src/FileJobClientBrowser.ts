@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { JobClient } from "./JobClient";
 import { Logger } from "./Logger";
+import { DEFAULT_URL } from "./constants";
 
 import type {
   ClassInitiator,
@@ -20,15 +21,11 @@ export class FileJobClient {
   /**
    * Creates a JobClient
    * @param {Object} config object
-   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com/api)
+   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com
    * @param {string} config.apiKey - user's API key
    */
-  constructor({
-    url = "https://app.modzy.com/api",
-    apiKey,
-    logging,
-  }: ClassInitiator) {
-    this.baseUrl = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
+  constructor({ url = "DEFAULT_URL", apiKey, logging }: ClassInitiator) {
+    this.baseUrl = url;
     this.headers = {
       Authorization: `ApiKey ${apiKey}`,
     };
@@ -58,7 +55,7 @@ export class FileJobClient {
         formData.append("input", chunk);
 
         try {
-          const requestUrl = `${this.baseUrl}/jobs/${jobIdentifier}/${inputItemKey}/${inputName}`;
+          const requestUrl = `${this.baseUrl}/api/jobs/${jobIdentifier}/${inputItemKey}/${inputName}`;
           this.logger.debug(`uploadFileToOpenJob POST ${requestUrl}`);
           await axios.post(requestUrl, formData, {
             headers: this.headers,

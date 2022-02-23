@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { ApiError } from "./ApiError";
 import { Logger } from "./Logger";
+import { DEFAULT_URL } from "./constants";
 
 import type {
   ClassInitiator,
@@ -29,15 +30,11 @@ export class JobClient {
   /**
    * Creates a JobClient
    * @param {Object} config object
-   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com/api)
+   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com)
    * @param {string} config.apiKey - user's API key
    */
-  constructor({
-    url = "https://app.modzy.com/api",
-    apiKey,
-    logging,
-  }: ClassInitiator) {
-    this.baseUrl = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
+  constructor({ url = DEFAULT_URL, apiKey, logging }: ClassInitiator) {
+    this.baseUrl = url;
     this.headers = {
       Authorization: `ApiKey ${apiKey}`,
     };
@@ -84,7 +81,7 @@ export class JobClient {
       }
     }
 
-    const requestUrl = `${this.baseUrl}/jobs/history`;
+    const requestUrl = `${this.baseUrl}/api/jobs/history`;
     this.logger.debug(`getJobHistory(${params}) GET ${requestUrl}`);
 
     return axios
@@ -106,7 +103,7 @@ export class JobClient {
    * Call the Modzy API Service that return a job instance by it's identifier
    */
   getJob(jobId: string): Promise<GetJobResponse> {
-    const requestUrl = `${this.baseUrl}/jobs/${jobId}`;
+    const requestUrl = `${this.baseUrl}/api/jobs/${jobId}`;
     this.logger.debug(`getJob GET ${requestUrl}`);
 
     return axios
@@ -122,7 +119,7 @@ export class JobClient {
   }
 
   getResult(jobId: string): Promise<GetResultResponse> {
-    const requestUrl = `${this.baseUrl}/results/${jobId}`;
+    const requestUrl = `${this.baseUrl}/api/results/${jobId}`;
     this.logger.debug(`getResult GET ${requestUrl}`);
 
     return axios
@@ -143,7 +140,7 @@ export class JobClient {
     outputName,
     responseType = "json",
   }: GetOutputContentsParams): Promise<unknown> {
-    const requestUrl = `${this.baseUrl}/results/${jobId}/datasource/${inputKey}/output/${outputName}`;
+    const requestUrl = `${this.baseUrl}/api/results/${jobId}/datasource/${inputKey}/output/${outputName}`;
     this.logger.debug(`getOutputContents GET ${requestUrl}`);
 
     return axios
@@ -201,7 +198,7 @@ export class JobClient {
    * Cancel a job by its identifier
    */
   cancelJob(jobId: string) {
-    const requestUrl = `${this.baseUrl}/jobs/${jobId}`;
+    const requestUrl = `${this.baseUrl}/api/jobs/${jobId}`;
     this.logger.debug(`cancelJob DELETE ${requestUrl}`);
 
     return axios
@@ -219,7 +216,7 @@ export class JobClient {
   }
 
   closeOpenJob(jobId: string) {
-    const requestUrl = `${this.baseUrl}/jobs/${jobId}/close`;
+    const requestUrl = `${this.baseUrl}/api/jobs/${jobId}/close`;
     this.logger.debug(`closeOpenJob POST ${requestUrl}`);
 
     return axios
@@ -235,7 +232,7 @@ export class JobClient {
   }
 
   getProcessingEngineStatus(): Promise<EnginesResponse> {
-    const requestUrl = `${this.baseUrl}/resources/processing/engines`;
+    const requestUrl = `${this.baseUrl}/api/resources/processing/engines`;
     this.logger.debug(`getProcessingEngineStatus GET ${requestUrl}`);
 
     return axios
@@ -251,7 +248,7 @@ export class JobClient {
   }
 
   submitJob(job: SubmitJobParams): Promise<SubmitJobResponse> {
-    const requestUrl = `${this.baseUrl}/jobs`;
+    const requestUrl = `${this.baseUrl}/api/jobs`;
     this.logger.debug(`submitJob POST ${requestUrl}`);
 
     return axios

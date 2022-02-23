@@ -288,20 +288,6 @@ type Version = {
 
 export type GetModelVersionsByIdResponse = Version[];
 
-// export interface GetModelVersionInputSampleResponse {
-//   model: {
-//     identifier: string;
-//     version: string;
-//   };
-//   input: {
-//     type: string;
-//     accessKeyID: string;
-//     secretAccessKey: string;
-//     region: string;
-//     sources: Record<string, any>;
-//   };
-// }
-
 export interface SubmitJobResponse {
   model: {
     identifier: string;

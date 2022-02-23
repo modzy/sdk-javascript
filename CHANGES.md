@@ -5,7 +5,7 @@ Version 1 of the SDK client only supported Node application because the final bu
 The previous documentation often incorrectly showed the results of the methods having direct returns. In reality, all methods return a promise that resolves to the data shown.
 
 - modzyClient initialization parameter change to single object. The `url` key is optional as it defaults to app.modzy.com
-- Deprecated(?) `.getAllModels`. Still works; returns the same response
+- Removed `.getAllModels`. use getActiveModels() or call getModels() with no params.
 - Added `.getActiveModels`. Returns only the active models with more useful details
 - `.getModels` parameter change to single object.
 - `.getModel` renamed to `.getModelById`

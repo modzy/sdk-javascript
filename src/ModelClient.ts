@@ -3,6 +3,7 @@ import { compareTwoStrings } from "string-similarity";
 
 import { ApiError } from "./ApiError";
 import { Logger } from "./Logger";
+import { DEFAULT_URL } from "./constants";
 
 import type {
   ClassInitiator,
@@ -29,15 +30,11 @@ export class ModelClient {
   /**
    * Creates a ModelClient
    * @param {Object} config object
-   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com/api)
+   * @param {string} config.url - base url of modzy api (i.e.: https://app.modzy.com)
    * @param {string} config.apiKey - user's API key
    */
-  constructor({
-    url = "https://app.modzy.com/api",
-    apiKey,
-    logging,
-  }: ClassInitiator) {
-    this.baseUrl = url + (url.endsWith("/") ? "" : "/") + "models";
+  constructor({ url = DEFAULT_URL, apiKey, logging }: ClassInitiator) {
+    this.baseUrl = url;
     this.headers = {
       Authorization: `ApiKey ${apiKey}`,
     };
@@ -45,8 +42,24 @@ export class ModelClient {
   }
 
   /**
-   * LEGACY
-   * Call the Modzy service that retrieve models basic info (modelId, versions, and latestVersion)
+   * Get a list of models with very basic info such as modelId, versions, and latestVersion
+   * based on specified params. Returns the first 500 models if no params are sent.
+   *
+   * @param {Object} criteria - Search criteria object
+   * @param {string} criteria.modelId - The model's id
+   * @param {string} criteria.author - The model publisher's name
+   * @param {string} criteria.createdByEmail - The model publisher's email
+   * @param {string} criteria.name - The model's name
+   * @param {string} criteria.description - The model's description
+   * @param {boolean} criteria.isActive - If the model is active or not
+   * @param {boolean} criteria.isExpired - If the model is expired or not
+   * @param {boolean} criteria.isFeatured - If the model is featured or not
+   * @param {string} criteria.lastActiveDateTime - ISO 8601 date string representing when the model was last used
+   * @param {string} criteria.expirationDateTime - ISO 8601 date string representing when the model expires
+   * @param {number} criteria.page - This api call is paginated. This is the page of results to return
+   * @param {number} criteria.perPage - This api call is paginated. This is number of results per page to return
+   * @param {string} criteria.sortBy - Sort the results by this key
+   * @param {"ASC" | "DESC"} criteria.direction - Sort direction of the results
    */
   getModels({
     modelId,
@@ -61,8 +74,8 @@ export class ModelClient {
     expirationDateTime,
     page,
     perPage = 500,
-    direction,
     sortBy,
+    direction,
   }: GetModelsParams = {}): Promise<Model[]> {
     const params = {
       modelId,
@@ -90,10 +103,11 @@ export class ModelClient {
       }
     }
 
-    this.logger.debug(`getModels(${params}) GET ${this.baseUrl}`);
+    const requestUrl = `${this.baseUrl}/api/models`;
+    this.logger.debug(`getModels(${params}) GET ${requestUrl}`);
 
     return axios
-      .get(this.baseUrl, {
+      .get(requestUrl, {
         headers: this.headers,
         params,
       })
@@ -108,7 +122,7 @@ export class ModelClient {
   }
 
   /**
-   * LEGACY
+   * DEPRECATED
    * Call the Modzy service that returns all the models, this
    * method is a wrapper of [ModelClient#getModels()]{@link ModelClient#getModels} method.
    * @see {@link ModelClient#getModels}
@@ -121,11 +135,10 @@ export class ModelClient {
   }
 
   /**
-   * Gets all the models with details
-   * @returns {Model[]} - A list of all Modzy Models
+   * Get a list of all active models and their names, descriptions, and active versions
    */
   getActiveModels(): Promise<LatestModel[]> {
-    const requestUrl = `${this.baseUrl}/latest`;
+    const requestUrl = `${this.baseUrl}/api/models/latest`;
 
     this.logger.debug(`getActiveModels GET ${requestUrl}`);
 
@@ -152,7 +165,7 @@ export class ModelClient {
    * @throws {ApiError} Error if there is something wrong with the service or the call
    */
   getModelById(modelId: string): Promise<GetModelByIdResponse> {
-    const requestUrl = `${this.baseUrl}/${modelId}`;
+    const requestUrl = `${this.baseUrl}/api/models/${modelId}`;
 
     this.logger.debug(`getModelById GET ${requestUrl}`);
 
@@ -172,7 +185,7 @@ export class ModelClient {
     modelId,
     version,
   }: GetModelDetailsParams): Promise<GetModelDetailsResponse> {
-    const requestUrl = `${this.baseUrl}/${modelId}/versions/${version}`;
+    const requestUrl = `${this.baseUrl}/api/models/${modelId}/versions/${version}`;
 
     this.logger.debug(`getModelVersion GET ${requestUrl}`);
 
@@ -234,7 +247,7 @@ export class ModelClient {
           return this.getModelById(models[0].modelId);
         } else {
           throw new ApiError(null, {
-            url: this.baseUrl,
+            url: `${this.baseUrl}/api/models`,
             code: 400,
             message: `Model ${name} not found`,
           });
@@ -250,7 +263,7 @@ export class ModelClient {
    * Returns a list of all the versions of the model with the specified id
    */
   getModelVersionsById(modelId: string): Promise<GetModelVersionsByIdResponse> {
-    const requestUrl = `${this.baseUrl}/${modelId}/versions`;
+    const requestUrl = `${this.baseUrl}/api/models/${modelId}/versions`;
 
     this.logger.debug(`getModelVersionsById GET ${requestUrl}`);
 
@@ -267,7 +280,7 @@ export class ModelClient {
   }
 
   getModelVersionInputSample({ modelId, version }: GetModelDetailsParams) {
-    const requestUrl = `${this.baseUrl}/${modelId}/versions/${version}/sample-input`;
+    const requestUrl = `${this.baseUrl}/api/models/${modelId}/versions/${version}/sample-input`;
     this.logger.debug(`getModelVersionInputSample GET ${requestUrl}`);
     return axios
       .get(requestUrl, { headers: this.headers })
@@ -282,7 +295,7 @@ export class ModelClient {
   }
 
   getModelVersionOutputSample({ modelId, version }: GetModelDetailsParams) {
-    const requestUrl = `${this.baseUrl}/${modelId}/versions/${version}/sample-output`;
+    const requestUrl = `${this.baseUrl}/api/models/${modelId}/versions/${version}/sample-output`;
     this.logger.debug(`getModelVersionOutputSample GET ${requestUrl}`);
 
     return axios

@@ -38,7 +38,7 @@ const modzyClient = new ModzyClient({
 // or for private Modzy instances
 const modzyClient = new ModzyClient({
   apiKey: "xxxxxxxxxxxxx.xxxxxxxxxxxxx",
-  url: "https://modzy.yourdomain.com/api
+  url: "https://modzy.yourdomain.com",
 });
 ```
 
@@ -212,6 +212,17 @@ fs.writeFileSync("./results.wav", speechContents);
 
 Check out our [samples](https://github.com/modzy/sdk-javascript/tree/main/samples) for details on specific use cases.
 Samples are intended to be run using Node, but most can also run in the browser. The `react examples` directory contains a couple of react components to show how you can use the browser to send files to, or retrieve files from Modzy. To run the samples using app.modzy.com, make sure to update the line `const API_KEY = process.env.MODZY_API_KEY;` to contain a real api key from your account.
+
+---
+
+## Running tests
+
+The Jest tests expect that there is a .env file at the root of the repo that contains a
+valid app.modzy.com api key like this:
+
+```
+API_KEY=xxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxx
+```
 
 ---
 

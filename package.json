@@ -33,7 +33,8 @@
     "build:babel": "rimraf ./dist && babel --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir dist",
     "build:types": "rimraf ./types && tsc --project ./tsconfig.types.json && replace 'import type' 'import' ./types -r --silent && replace 'export type' 'export' ./types -r --silent",
     "prettier": "prettier \"{.,src,src/**,types}/*.{md,js,jsx,ts,tsx,json}\"",
-    "format": "yarn prettier --write"
+    "format": "yarn prettier --write",
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
@@ -45,8 +46,11 @@
     "@types/string-similarity": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
+    "babel-jest": "^27.5.1",
+    "dotenv": "^16.0.0",
     "eslint": "^8.8.0",
     "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.5.1",
     "prettier": "^2.5.0",
     "replace": "^1.2.1",
     "rimraf": "^3.0.2",
