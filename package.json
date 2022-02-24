@@ -1,9 +1,10 @@
 {
   "name": "@modzy/modzy-sdk",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "Javascript SDK for Modzy",
-  "license": "Booz Allen Public License v1.0",
-  "main": "dist/main.js",
+  "author": "Modzy",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/modzy/sdk-javascript.git"
@@ -12,32 +13,52 @@
     "Modzy",
     "SDK"
   ],
-  "author": "Modzy",
   "bugs": {
     "url": "https://github.com/modzy/sdk-javascript/issues"
   },
   "homepage": "https://github.com/modzy/sdk-javascript#readme",
-  "scripts": {
-    "prepare": "babel src --out-dir=dist",
-    "prepack": "babel src --out-dir=dist",
-    "docs": "jsdoc -c jsdoc.json",
-    "build": "babel src --out-dir=dist",
-    "test": "jest --detectOpenHandles"
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "browser": {
+    "dist/FileJobClient.js": "./dist/FileJobClientBrowser.js",
+    "dist/base64Util.js": "./dist/base64UtilBrowser.js",
+    "fs": false
   },
-  "dependencies": {
-    "axios": "^0.21.1",
-    "dotenv": "^8.2.0",
-    "form-data": "^4.0.0",
-    "log4js": "^6.1.2",
-    "string-similarity": "^4.0.4"
+  "scripts": {
+    "watch": "babel --watch --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir dist",
+    "build": "yarn build:babel && yarn build:types",
+    "build:babel": "rimraf ./dist && babel --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir dist",
+    "build:types": "rimraf ./types && tsc --project ./tsconfig.types.json && replace 'import type' 'import' ./types -r --silent && replace 'export type' 'export' ./types -r --silent",
+    "prettier": "prettier \"{.,src,src/**,types}/*.{md,js,jsx,ts,tsx,json}\"",
+    "format": "yarn prettier --write",
+    "test": "jest"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.7",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
-    "babel-jest": "^25.1.0",
-    "jest": "^25.1.0",
-    "jsdoc": "^3.6.4"
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/node": "^17.0.8",
+    "@types/string-similarity": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "babel-jest": "^27.5.1",
+    "dotenv": "^16.0.0",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.5.1",
+    "prettier": "^2.5.0",
+    "replace": "^1.2.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "form-data": "^4.0.0",
+    "string-similarity": "^4.0.4"
   }
 }
