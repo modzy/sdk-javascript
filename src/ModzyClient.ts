@@ -80,7 +80,7 @@ export class ModzyClient {
   /**
    * Returns a list of all the versions of the model with the specified id. No other
    * information is returned. Using `getModelById()` and pulling the `versions`,
-   * `latestVersion`, or `latestActiveVersion` from the response may suit your needs better
+   * `latestVersion`, or `latestActiveVersion` from the response may suit your needs better.
    */
   getModelVersionsById(modelId: string) {
     return this.modelClient.getModelVersionsById(modelId);
@@ -103,7 +103,7 @@ export class ModzyClient {
   }
 
   /**
-   * Gets the output sample associated with the model and version provided
+   * Gets the output sample associated with the model and version provided (if it exists).
    */
   getModelVersionOutputSample({ modelId, version }: GetModelDetailsParams) {
     return this.modelClient.getModelVersionOutputSample({ modelId, version });
@@ -200,14 +200,14 @@ export class ModzyClient {
   }
 
   /**
-   * Submit a job with the input(s) specified as a Blob (browser) or file path (Node)
+   * Submit a job with the input(s) specified as a Blob (browser) or file path (Node.js)
    */
   submitJobFile(params: SubmitJobFileParams) {
     return this.fileJobClient.submitJobFile(params);
   }
 
   /**
-   * Converts a file path (string) to a data url for embedded job types (node only)
+   * Converts a file path (string) to a data url for embedded job types (Node.js only)
    */
   pathToDataUrl(path: string, mimeType: string) {
     return toBase64({ path, mimeType });

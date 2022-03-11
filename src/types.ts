@@ -22,7 +22,17 @@ export type GetModelsParams = {
   page?: number;
   perPage?: number;
   direction?: "ASC" | "DESC";
-  sortBy?: string;
+  sortBy?:
+    | "modelId"
+    | "author"
+    | "submittedByEmail"
+    | "name"
+    | "isExpired"
+    | "isActive"
+    | "latestVersion"
+    | "isRecommended"
+    | "lastActiveDateTime"
+    | "expirationDateTime";
 };
 
 export type GetModelDetailsParams = { modelId: string; version: string };
