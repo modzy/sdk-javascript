@@ -132,8 +132,8 @@ export class FileJobClient {
   submitJobFile({
     modelId,
     version,
-    sources,
     explain = false,
+    sources,
   }: SubmitJobFileParams): Promise<SubmitJobResponse> {
     let job = {} as SubmitJobResponse;
 

@@ -236,31 +236,31 @@ Returns a list of all the versions of the model with the specified id. No other 
 Returns version details. It includes timeout, requirement, containerImage, loadStatus, runStatus, inputs, outputs, statistics, technicalDetails, sampleInput, sampleOutput, performanceSummary, processing, and others.
 
 .getModelVersionInputSample
-Gets a job request sample for this model in JSON format (if it exists).
+Get a job request sample for this model in JSON format (if it exists).
 
 .getModelVersionOutputSample
-Gets the output sample associated with the model and version provided (if it exists)
+Get the output sample associated with the model and version provided (if it exists)
 
 .getJob
-Return the Job details, including the status, total, completed, and failed number of items.
+Return the job details, including the status, total, completed, and failed number of items.
 
 .cancelJob
-Send a request to the server in order to cancel a Job
+Send a request to the server in order to cancel a job.
 
 .getResult
-Return the current results of a Job execution, including completed, failed, total number of items processed
+Get the current results of a job execution, including completed, failed, total number of items processed.
 
 .getOutputContents
 Get the contents of a specific job output. Consult the model's api for the output name and file type
 
 .blockUntilJobComplete
-Blocks subsequent code execution until the job changes its status to COMPLETED, TIMEDOUT or CANCELED.
+Block subsequent code execution until the job changes its status to COMPLETED, TIMEDOUT or CANCELED.
 
 .getJobHistory
-Gets a list of jobs meeting the search parameter criteria. Returns the latest 100 jobs if no params are sent.
+Get a paginated list of jobs meeting the search parameter criteria. Returns the latest 100 jobs if no params are sent.
 
 .getProcessingEngineStatus
-Returns a list of all active processing engines and their status
+Return a list of all active processing engines and their status
 
 .submitJobText
 Submit a job with plain text inputs
@@ -278,7 +278,7 @@ Submit a job based on a sql query on a database accessed through JDBC.
 Submit a job with the input(s) specified as a Blob (browser) or file path (Node.js)
 
 .pathToDataUrl
-Converts a file path (string) to a data url for embedded job types (Node.js only)
+Convert a file path (string) to a data url for embedded job types (Node.js only)
 
 .fileToDataUrl
-Converts a JS File Object to a data url for embedded job types (browser only)
+Convert a JS File Object to a data url for embedded job types (browser only)
