@@ -32,6 +32,7 @@ export default function SubmitJobFile() {
             [file.name]: {
               image: file,
             },
+          },
         });
 
         // Wait for the job to complete
