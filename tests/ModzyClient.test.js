@@ -6,7 +6,7 @@ const modzyClient = new ModzyClient({ apiKey });
 
 const EXAMPLE_MODEL_ID = "ed542963de"; // Sentiment Analysis
 const EXAMPLE_MODEL_NAME = "Sentiment Analysis"; // Sentiment Analysis
-const EXAMPLE_MODEL_VERSION = "1.0.27"; // Sentiment Analysis
+const EXAMPLE_MODEL_VERSION = "1.0.1"; // Sentiment Analysis
 const EXAMPLE_MODEL_INPUT_NAME = "input.txt"; // Sentiment Analysis
 
 describe("Setup", () => {
