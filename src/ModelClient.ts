@@ -123,8 +123,8 @@ export class ModelClient {
 
   /**
    * DEPRECATED
-   * Call the Modzy service that returns all the models, this
-   * method is a wrapper of [ModelClient#getModels()]{@link ModelClient#getModels} method.
+   * Get first 500 models models, this method is a wrapper of
+   * [ModelClient#getModels()]{@link ModelClient#getModels} method.
    * @see {@link ModelClient#getModels}
    * @returns {Model[]} - A list of all Modzy Models
    * @throws {ApiError} Error if there is something wrong with the service or the call
@@ -157,12 +157,7 @@ export class ModelClient {
   }
 
   /**
-   *
-   * Call the Modzy API Service that return a model instance by it's identifier
-   *
-   * @param {string} modelId - Identifier of the model
-   * @returns {Object} A Modzy model
-   * @throws {ApiError} Error if there is something wrong with the service or the call
+   * Get model instance by it's identifier
    */
   getModelById(modelId: string): Promise<GetModelByIdResponse> {
     const requestUrl = `${this.baseUrl}/api/models/${modelId}`;

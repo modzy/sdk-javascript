@@ -22,7 +22,17 @@ export type GetModelsParams = {
   page?: number;
   perPage?: number;
   direction?: "ASC" | "DESC";
-  sortBy?: string;
+  sortBy?:
+    | "modelId"
+    | "author"
+    | "submittedByEmail"
+    | "name"
+    | "isExpired"
+    | "isActive"
+    | "latestVersion"
+    | "isRecommended"
+    | "lastActiveDateTime"
+    | "expirationDateTime";
 };
 
 export type GetModelDetailsParams = { modelId: string; version: string };
@@ -33,7 +43,7 @@ export interface GetJobHistoryParams {
   startDate?: string;
   endDate?: string;
   model?: string;
-  status?: string;
+  status?: "ALL" | "TERMINATED" | "TERMINATED_WITH_ERROR" | "PENDING";
   page?: number;
   perPage?: number;
   direction?: "ASC" | "DESC";
@@ -91,7 +101,7 @@ export interface SubmitJobAwsS3Params {
   accessKeyID: string;
   secretAccessKey: string;
   region: string;
-  sources: string;
+  sources: any;
   explain?: boolean;
 }
 

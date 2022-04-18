@@ -26,7 +26,6 @@ node_modules
 # build
 dist
 types
-docs
 
 # misc
 .DS_Store
