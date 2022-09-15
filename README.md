@@ -1,6 +1,6 @@
 <div align="center">
 
-![javascript-sdk-github-banner.png](https://raw.githubusercontent.com/modzy/sdk-javascript/main/javascript-sdk-github-banner.png)
+![javascript-sdk-github-banner.png](javascript-sdk-github-banner.png)
 
 ![GitHub contributors](https://img.shields.io/github/contributors/modzy/sdk-javascript?logo=GitHub&style=flat)
 ![GitHub last commit](https://img.shields.io/github/last-commit/modzy/sdk-javascript?logo=GitHub&style=flat)
